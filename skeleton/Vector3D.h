@@ -54,4 +54,14 @@ public:
 	Vector3D operator*(float other) {
 		return ProductoPorEscalar(other);
 	}
+
+	float X() {
+		return _x;
+	}
+	float Y() {
+		return _x;
+	}
+	float Z() {
+		return _x;
+	}
 };

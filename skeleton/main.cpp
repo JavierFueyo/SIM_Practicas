@@ -11,6 +11,7 @@
 #include <iostream>
 
 #include "Vector3D.h"
+#include "Particula.h"
 
 std::string display_text = "This is a test";
 
@@ -32,6 +33,8 @@ PxDefaultCpuDispatcher*	gDispatcher = NULL;
 PxScene*				gScene      = NULL;
 ContactReportCallback gContactReportCallback;
 
+Particula* p;
+
 
 // Initialize physics engine
 void initPhysics(bool interactive)
@@ -48,7 +51,7 @@ void initPhysics(bool interactive)
 
 	gMaterial = gPhysics->createMaterial(0.5f, 0.5f, 0.6f);
 
-	PxSphereGeometry sphere(1.0f);
+	/*PxSphereGeometry sphere(10.0f);
 
 	RenderItem* cSphere = new RenderItem(CreateShape(sphere, gMaterial), {1,1,1,1});
 
@@ -58,9 +61,9 @@ void initPhysics(bool interactive)
 
 	RenderItem* xSphere = new RenderItem(CreateShape(sphere, gMaterial), xTransform, { 1, 0, 0, 1 });
 	RenderItem* ySphere = new RenderItem(CreateShape(sphere, gMaterial), yTransform, { 0, 1, 0, 1 });
-	RenderItem* zSphere = new RenderItem(CreateShape(sphere, gMaterial), zTransform, { 0, 0, 1, 1 });
+	RenderItem* zSphere = new RenderItem(CreateShape(sphere, gMaterial), zTransform, { 0, 0, 1, 1 });*/
 
-
+	p = new Particula(Vector3D(0.0f, 0.0f, 0.0f), Vector3D(50.0f, 0.0f, 0.0f), Vector3D(20.0f, 0.0f, 0.0f));
 
 
 	// For Solid Rigids +++++++++++++++++++++++++++++++++++++
@@ -80,6 +83,8 @@ void initPhysics(bool interactive)
 void stepPhysics(bool interactive, double t)
 {
 	PX_UNUSED(interactive);
+
+	p->integrar(t);
 
 	gScene->simulate(t);
 	gScene->fetchResults(true);
