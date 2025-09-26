@@ -35,23 +35,27 @@ public:
 		return res;
 	}
 
-	Vector3D operator=(Vector3D other) {
-		return Vector3D(other._x, other._y, other._z);
+	Vector3D& operator=(const Vector3D &other) {
+		_x = other._x;
+		_y = other._y;
+		_z = other._z;
+
+		return *this;
 	}
 
-	Vector3D operator+(Vector3D other) {
+	Vector3D operator+(const Vector3D &other) {
 		return Vector3D(_x + other._x, _y + other._y, _z + other._z);
 	}
 
-	Vector3D operator-(Vector3D other) {
+	Vector3D operator-(const Vector3D &other) {
 		return Vector3D(_x - other._x, _y - other._y, _z - other._z);
 	}
 
-	float operator*(Vector3D other) {
+	float operator*(const Vector3D &other) {
 		return ProductoEscalar(other);
 	}
 
-	Vector3D operator*(float other) {
+	Vector3D operator*(const float &other) {
 		return ProductoPorEscalar(other);
 	}
 
