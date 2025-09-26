@@ -1,7 +1,8 @@
 #pragma once
 #include <cmath>
 
-class Vector3D {
+class Vector3D
+{
 	float _x, _y, _z;
 
 public:

@@ -22,6 +22,7 @@
     <ClInclude Include="RenderUtils.hpp" />
     <ClInclude Include="callbacks.hpp" />
     <ClInclude Include="Vector3D.h" />
+    <ClInclude Include="Particula.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Render">
