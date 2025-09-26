@@ -10,6 +10,8 @@
 
 #include <iostream>
 
+#include "Vector3D.h"
+
 std::string display_text = "This is a test";
 
 
@@ -45,6 +47,21 @@ void initPhysics(bool interactive)
 	gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale(),true,gPvd);
 
 	gMaterial = gPhysics->createMaterial(0.5f, 0.5f, 0.6f);
+
+	PxSphereGeometry sphere(1.0f);
+
+	//RenderItem* cSphere = new RenderItem(CreateShape(sphere, gMaterial), {1,1,1,1});
+
+	Vector3D* xTransform = new Vector3D({ 1.0f, 0.0f, 0.0f });
+	Vector3D* yTransform = new Vector3D({ 0.0f, 1.0f, 0.0f });
+	Vector3D* zTransform = new Vector3D({ 0.0f, 0.0f, 1.0f });
+
+	RenderItem* xSphere = new RenderItem(CreateShape(sphere, gMaterial), &xTransform, { 1, 0, 0, 1 });
+	RenderItem* ySphere = new RenderItem(CreateShape(sphere, gMaterial), &yTransform, { 0, 1, 0, 1 });
+	RenderItem* zSphere = new RenderItem(CreateShape(sphere, gMaterial), &zTransform, { 0, 0, 1, 1 });
+
+
+
 
 	// For Solid Rigids +++++++++++++++++++++++++++++++++++++
 	PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
