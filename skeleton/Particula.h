@@ -7,14 +7,14 @@ using namespace physx;
 class Particula
 {
 public:
-	Particula(Vector3D Pos, Vector3D Vel, Vector3D Acel);
+	Particula(PxVec3 Pos, PxVec3 Vel, PxVec3 Acel);
 	~Particula();
 
 	void integrar(double t);
 
 private:
-	Vector3D _vel;
-	Vector3D _acel;
+	PxVec3 _vel;
+	PxVec3 _acel;
 	physx::PxTransform _pos;
 	RenderItem* renderItem;
 };
