@@ -63,7 +63,7 @@ void initPhysics(bool interactive)
 	RenderItem* ySphere = new RenderItem(CreateShape(sphere, gMaterial), yTransform, { 0, 1, 0, 1 });
 	RenderItem* zSphere = new RenderItem(CreateShape(sphere, gMaterial), zTransform, { 0, 0, 1, 1 });
 
-	p = new Particula(PxVec3(0.0f, 0.0f, 0.0f), PxVec3(10.0f, 0.0f, 0.0f), PxVec3(1.0f, 0.0f, 0.0f));
+	p = new Particula(PxVec3(0.0f, 0.0f, 0.0f), PxVec3(1.0f, 0.0f, 0.0f), PxVec3(1.0f, 0.0f, 0.0f));
 
 
 	// For Solid Rigids +++++++++++++++++++++++++++++++++++++
@@ -84,8 +84,8 @@ void stepPhysics(bool interactive, double t)
 {
 	PX_UNUSED(interactive);
 
-	//p->integrarEulerSemiImplicito(t);
-	p->integrarVerlet(t);
+	p->integrarEulerSemiImplicito(t);
+	//p->integrarVerlet(t);
 
 	gScene->simulate(t);
 	gScene->fetchResults(true);
