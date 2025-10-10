@@ -63,7 +63,7 @@ void initPhysics(bool interactive)
 	RenderItem* ySphere = new RenderItem(CreateShape(sphere, gMaterial), yTransform, { 0, 1, 0, 1 });
 	RenderItem* zSphere = new RenderItem(CreateShape(sphere, gMaterial), zTransform, { 0, 0, 1, 1 });
 
-	p = new Particula(PxVec3(0.0f, 0.0f, 0.0f), PxVec3(1.0f, 0.0f, 0.0f), PxVec3(1.0f, 0.0f, 0.0f));
+	p = new Particula(Vector3D(0.0f, 0.0f, 0.0f), Vector3D(10.0f, 0.0f, 0.0f), Vector3D(1.0f, 0.0f, 0.0f));
 
 
 	// For Solid Rigids +++++++++++++++++++++++++++++++++++++

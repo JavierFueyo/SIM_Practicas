@@ -12,11 +12,10 @@ public:
 		return sqrt((_x * _x) + (_y * _y) + (_z * _z));
 	}
 
-	void NormalizarVector() {
+	Vector3D NormalizarVector() {
 		float mod = Modulo();
-		_x = (_x / mod);
-		_y = (_y / mod);
-		_z = (_z / mod);
+
+		return Vector3D(_x / mod, _y / mod, _z / mod);
 	}
 
 	float ProductoEscalar(Vector3D other) {
@@ -63,9 +62,9 @@ public:
 		return _x;
 	}
 	float Y() {
-		return _x;
+		return _y;
 	}
 	float Z() {
-		return _x;
+		return _z;
 	}
 };
