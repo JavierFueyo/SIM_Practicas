@@ -9,11 +9,12 @@
 #include "callbacks.hpp"
 
 #include <iostream>
+#include <vector>
 
-#include "Vector3D.h"
+//#include "Vector3D.h"
 #include "Particula.h"
 
-std::string display_text = "This is a test";
+std::string display_text = "This Is A Test";
 
 
 using namespace physx;
@@ -34,6 +35,8 @@ PxScene*				gScene      = NULL;
 ContactReportCallback gContactReportCallback;
 
 Particula* p;
+Particula* q;
+std::vector<Particula*> _partVect;
 
 
 // Initialize physics engine
@@ -49,6 +52,7 @@ void initPhysics(bool interactive)
 
 	gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale(),true,gPvd);
 
+	//Ejes de coordenadas
 	gMaterial = gPhysics->createMaterial(0.5f, 0.5f, 0.6f);
 
 	PxSphereGeometry sphere(1.0f);
@@ -63,7 +67,11 @@ void initPhysics(bool interactive)
 	RenderItem* ySphere = new RenderItem(CreateShape(sphere, gMaterial), yTransform, { 0, 1, 0, 1 });
 	RenderItem* zSphere = new RenderItem(CreateShape(sphere, gMaterial), zTransform, { 0, 0, 1, 1 });
 
-	p = new Particula(Vector3D(0.0f, 0.0f, 0.0f), Vector3D(10.0f, 0.0f, 0.0f), Vector3D(1.0f, 0.0f, 0.0f));
+	//Practica 1: particula
+	//p = new Particula(Vector3D(0.0f, 0.0f, 0.0f), Vector3D(10.0f, 0.0f, 0.0f), Vector3D(1.0f, 0.0f, 0.0f), 1.0f, 1.0f, 1.0f);
+
+	//Practica 2: Sistema de particulas
+
 
 
 	// For Solid Rigids +++++++++++++++++++++++++++++++++++++
@@ -84,8 +92,13 @@ void stepPhysics(bool interactive, double t)
 {
 	PX_UNUSED(interactive);
 
-	p->integrarEulerSemiImplicito(t);
+	//p->integrarEulerSemiImplicito(t);
 	//p->integrarVerlet(t);
+
+	for (Particula* q : _partVect) {
+		if (q) q->integrarEulerSemiImplicito(t);
+	}
+	
 
 	gScene->simulate(t);
 	gScene->fetchResults(true);
@@ -109,6 +122,15 @@ void cleanupPhysics(bool interactive)
 	gFoundation->release();
 	}
 
+void shootProjectile() {
+	Camera* _cam = GetCamera();
+	PxVec3 pos = _cam->getEye();
+	PxVec3 dir = _cam->getDir();
+	Vector3D _pos = Vector3D(pos.x, pos.y, pos.z);
+	Vector3D _dir = Vector3D(dir.x, dir.y, dir.z);
+	_partVect.push_back(new Particula(_pos, _dir * 50, Vector3D(0.0f, 0.0f, 0.0f), 1.0f, 1.0f, 50.0f));
+}
+
 // Function called when a key is pressed
 void keyPress(unsigned char key, const PxTransform& camera)
 {
@@ -122,6 +144,9 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	{
 		break;
 	}
+	case 'P':
+		shootProjectile();
+		break;
 	default:
 		break;
 	}
@@ -132,6 +157,7 @@ void onCollision(physx::PxActor* actor1, physx::PxActor* actor2)
 	PX_UNUSED(actor1);
 	PX_UNUSED(actor2);
 }
+
 
 
 int main(int, const char*const*)
