@@ -11,8 +11,12 @@
 #include <iostream>
 #include <vector>
 
-//#include "Vector3D.h"
+#include "Vector3D.h"
 #include "Particula.h"
+#include "SistemaParticulas.h"
+#include "ForceGenerator.h"
+#include "Gravedad.h"
+#include "Viento.h"
 
 std::string display_text = "This Is A Test";
 
@@ -37,6 +41,8 @@ ContactReportCallback gContactReportCallback;
 Particula* p;
 Particula* q;
 std::vector<Particula*> _partVect;
+
+SistemaParticulas* s;
 
 
 // Initialize physics engine
@@ -71,8 +77,31 @@ void initPhysics(bool interactive)
 	//p = new Particula(Vector3D(0.0f, 0.0f, 0.0f), Vector3D(10.0f, 0.0f, 0.0f), Vector3D(1.0f, 0.0f, 0.0f), 1.0f, 1.0f, 1.0f);
 
 	//Practica 2: Sistema de particulas
+	s = new SistemaParticulas();
 
+	Emisor* e1 = new Emisor(Vector3D(0.0f, 0.0f, 0.0f), Vector3D(0.5f, 0.5f, 0.5f), 1,
+		Vector3D(1.0f, 1.0f, 1.0f), Vector3D(3.0f, 3.0f, 3.0f), Vector3D(0.0f, 0.0f, 0.0f),
+		Vector3D(1.0f, 1.0f, 1.0f), Vector4(1, 0, 0, 1), 1.0f, 2.0f, 0.5f, -9.8, 0.99, true);
 
+	Emisor* e2 = new Emisor(Vector3D(0.0f, 0.0f, 0.0f), Vector3D(0.4f, 0.4f, 0.4f), 1,
+		Vector3D(1.0f, 1.0f, 1.0f), Vector3D(3.0f, 3.0f, 3.0f), Vector3D(0.0f, 0.0f, 0.0f),
+		Vector3D(1.0f, 1.0f, 1.0f), Vector4(1, 0.5, 0, 1), 0.2f, 2.0f, 0.4f, -9.8, 0.99, true);
+
+	Emisor* e3 = new Emisor(Vector3D(0.0f, 0.0f, 0.0f), Vector3D(0.3f, 0.3f, 0.3f), 1,
+		Vector3D(1.0f, 1.0f, 1.0f), Vector3D(3.0f, 3.0f, 3.0f), Vector3D(0.0f, 0.0f, 0.0f),
+		Vector3D(1.0f, 1.0f, 1.0f), Vector4(1, 1, 0, 1), 0.2f, 2.0f, 0.3f, -9.8, 0.99, true);
+
+	s->AñadirEmisor(e1);
+	//s->AñadirEmisor(e2);
+	//s->AñadirEmisor(e3);
+
+	//Practica 3: Generadores de fuerzas
+	/*Gravedad* g1 = new Gravedad(Vector3D(0.0f, -9.8f,0.0f));
+	Gravedad* g2 = new Gravedad(Vector3D(0.0f, -5.0f, 0.0f));
+
+	ForceGenerator generador = ForceGenerator();
+	p = new Particula(Vector3D(0.0f, 0.0f, 0.0f), Vector3D(0.0f, 0.0f, 0.0f), Vector3D(0.0f, 0.0f, 0.0f), Vector4(1, 1, 1, 1), 1.0f, 0.99f, 1.0f);
+	generador.add(p, g1, true);*/
 
 	// For Solid Rigids +++++++++++++++++++++++++++++++++++++
 	PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
@@ -94,6 +123,8 @@ void stepPhysics(bool interactive, double t)
 
 	//p->integrarEulerSemiImplicito(t);
 	//p->integrarVerlet(t);
+
+	s->update(t);
 
 	for (Particula* q : _partVect) {
 		if (q) q->integrarEulerSemiImplicito(t);
@@ -128,7 +159,11 @@ void shootProjectile() {
 	PxVec3 dir = _cam->getDir();
 	Vector3D _pos = Vector3D(pos.x, pos.y, pos.z);
 	Vector3D _dir = Vector3D(dir.x, dir.y, dir.z);
-	_partVect.push_back(new Particula(_pos, _dir * 50, Vector3D(0.0f, 0.0f, 0.0f), 1.0f, 1.0f, 50.0f));
+	std::cout << "A";
+	if (!_partVect.empty()) {
+		delete _partVect.back();
+	}
+	_partVect.push_back(new Particula(_pos, _dir * 50.0f, Vector3D(0.0f, 0.0f, 0.0f), Vector4(1,1,1,1), 1.0f, 1.0f, 1.0f));
 }
 
 // Function called when a key is pressed

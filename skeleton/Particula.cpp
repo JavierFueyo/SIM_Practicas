@@ -3,19 +3,26 @@
 using namespace physx;
 extern PxMaterial* gMaterial;
 
-Particula::Particula(Vector3D Pos, Vector3D Vel, Vector3D Acel, float Damping, float Mass, float Gravity) {
+Particula::Particula(Vector3D Pos, Vector3D Vel, Vector3D Acel, Vector4 Color, float Radius, float Damping, float Mass) {
 	_pos = PxTransform({ Pos.X(), Pos.Y(), Pos.Z()});
 	_vel = Vel;
-	_acel = Vector3D(Acel.X(), -Gravity, Acel.Z());
+	_acel = Acel;
 	_damping = Damping;
+	_radius = Radius;
 	_mass = Mass;
-	_gravity = Gravity;
 
-	PxSphereGeometry sphere(1.0f);
-	renderItem = new RenderItem(CreateShape(sphere, gMaterial), &_pos, { 1, 1, 0, 1 });
+	if (Mass > 0.0f) {
+		_inverseMass = 1.0f / Mass;
+	}
+	else {
+		_inverseMass = 0.0f;
+	}
+
+	PxSphereGeometry sphere(_radius);
+	renderItem = new RenderItem(CreateShape(sphere, gMaterial), &_pos, Color);
 }
+
 Particula::~Particula() {
-	//delete renderItem;
 }
 
 void
