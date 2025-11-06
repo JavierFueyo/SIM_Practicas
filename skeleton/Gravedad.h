@@ -3,11 +3,7 @@
 #include "Particula.h"
 
 class Gravedad : public TipoFuerza {
-private:
-    Vector3D _grav;
-
 public:
-
     Gravedad(const Vector3D& Gravity) : _grav(Gravity) {}
 
     virtual void updateFuerza(Particula* p, double dt) override
@@ -24,4 +20,8 @@ public:
     Vector3D getGrav() const { return _grav; }
 
     void setGrav(const Vector3D Gravity) { _grav = Gravity; }
+
+private:
+    Vector3D _grav;
+
 };

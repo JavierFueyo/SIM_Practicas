@@ -57,72 +57,30 @@ SistemaParticulas::update(double t) {
 void
 SistemaParticulas::ControlParticulas() {
 
-	for (auto& e : _emisores) {
-		std::vector<Particula*> ParticulasEmisor = e->getParticulas();
+	for (auto* e : _emisores)
+	{
+		auto& particulas = e->getParticulas();
 
-		for (auto& p : ParticulasEmisor) {
-			InstanciaParticula ip;
-			ip.p = p;
-			ip.tiempoDeVida = e->getLifeTime();
-			_particulas.push_back(ip);
-		}
-	}
-	std::vector<InstanciaParticula> ParticulasVivas;
-	ParticulasVivas.reserve(_particulas.size());
-
-	for (auto& ip : _particulas) {
-
-		if (!ip.p) continue;
-
-		PxTransform pos = ip.p->getPos();
-		float dist2 = pos.p.x * pos.p.x + pos.p.y * pos.p.y + pos.p.z * pos.p.z;
-
-
-		bool dead = (ip.tiempoDeVida <= ip.p->getTimeAlive() ||
-			pos.p.y < _maxDistanceY ||
-			dist2 > _maxDistanceFondo * _maxDistanceFondo);
-
-		if (dead)
+		for (auto it = particulas.begin(); it != particulas.end(); )
 		{
-			delete ip.p; //Fallo aqui
-			ip.p = nullptr;
-		}
-		else
-		{
-			ParticulasVivas.push_back(ip);
-		}
-	}
-	_particulas.swap(ParticulasVivas);
+			Particula* p = *it;
 
+			PxTransform pos = p->getPos();
+			float dist2 = pos.p.x * pos.p.x + pos.p.y * pos.p.y + pos.p.z * pos.p.z;
 
+			bool dead = (p->getTimeAlive() >= e->getLifeTime() ||
+				pos.p.y < _maxDistanceY ||
+				dist2 > _maxDistanceFondo * _maxDistanceFondo);
 
-
-	/*for (auto e : _emisores) {
-		std::vector<Particula*>& data = e->getParticulas();
-		if (!data.empty()) {
-
-			for (auto it = data.begin(); it != data.end();) {
-				Particula* p = *it;
-				float dist = p->getPos().p.x * p->getPos().p.x + p->getPos().p.y * p->getPos().p.y + p->getPos().p.z * p->getPos().p.z;
-				
-				if ((p->getTimeAlive() >= e->getLifeTime()) || dist >= _maxDistance) {
-					delete p;
-					it = data.erase(it);
-				}
-				else it++;
+			if (dead)
+			{
+				delete p;
+				it = particulas.erase(it);
 			}
-
-
-			/*for (auto p : e->getParticulas()) {
-				float dist = p->getPos().p.x * p->getPos().p.x + p->getPos().p.y * p->getPos().p.y + p->getPos().p.z * p->getPos().p.z;
-				if ((p->getTimeAlive() >= e->getLifeTime()) || dist >= _maxDistance) {
-					auto itAux = it;
-					delete p;
-					e->getParticulas().erase(itAux);
-					it++;
-				}
-				else it++;
+			else
+			{
+				++it;
 			}
 		}
-	}*/
+	}
 }

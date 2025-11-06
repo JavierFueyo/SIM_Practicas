@@ -272,6 +272,7 @@
     <ClInclude Include="Render\Render.h" />
     <ClInclude Include="SistemaParticulas.h" />
     <ClInclude Include="TipoFuerza.h" />
+    <ClInclude Include="Torbellino.h" />
     <ClInclude Include="Vector3D.h" />
     <ClInclude Include="Viento.h" />
   </ItemGroup>

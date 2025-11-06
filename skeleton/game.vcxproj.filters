@@ -30,6 +30,7 @@
     <ClInclude Include="TipoFuerza.h" />
     <ClInclude Include="Viento.h" />
     <ClInclude Include="Gravedad.h" />
+    <ClInclude Include="Torbellino.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Render">

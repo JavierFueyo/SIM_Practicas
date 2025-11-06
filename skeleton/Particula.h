@@ -12,7 +12,7 @@ public:
 	~Particula();
 
 	void agregarFuerza(const Vector3D& Fuerza) { _acumuladorFuerzas = _acumuladorFuerzas + Fuerza; }
-
+	void integrarFuerzas(double t);
 
 	void integrarEuler(double t);
 	void integrarEulerSemiImplicito(double t);
@@ -24,7 +24,7 @@ public:
 	Vector3D getVel() { return _vel; }
 	float getInverseMass() { return _inverseMass; }
 	float getKineticEnergy() { return _mass * _vel.Modulo(); }
-private:
+protected:
 	float _radius;
 	Vector3D _vel;
 	Vector3D _acel;
@@ -41,4 +41,8 @@ private:
 	//Para proyectiles
 	float _mass, _inverseMass;
 	Vector3D _acumuladorFuerzas;
+};
+
+class Proyectil : public Particula {
+	Proyectil(Vector3D Pos, Vector3D Vel, Vector3D Acel, Vector4 Color, float Radius = 1.0f, float Damping = 1.0f, float Mass = 0.0f);
 };
