@@ -13,7 +13,7 @@ public:
 	~Particula();
 
 	void agregarFuerza(const Vector3D& Fuerza);
-	void integrarFuerzas(double t);
+	virtual void integrarFuerzas(double t);
 
 	void integrarEuler(double t);
 	void integrarEulerSemiImplicito(double t);
@@ -27,7 +27,9 @@ public:
 	float getKineticEnergy() { return _mass * _vel.Modulo(); }
 	ForceGenerator* getForceGenerator() { return _generadorFuerzas; }
 
-	void agregarTipoFuerza(TipoFuerza* tF, bool Activa) { _generadorFuerzas->add(this, tF, Activa); }
+	void agregarTipoFuerza(TipoFuerza* tF, bool Activa) {
+		_generadorFuerzas->add(this, tF, Activa);
+	}
 	void quitarTipoFuerza(TipoFuerza* tF) { _generadorFuerzas->quitar(this, tF); }
 protected:
 	float _radius;
@@ -48,6 +50,36 @@ protected:
 	ForceGenerator* _generadorFuerzas;
 };
 
+//class Proyectil : public Particula {
+//	Proyectil(Vector3D Pos, Vector3D Vel, Vector3D Acel, Vector4 Color, float Radius = 1.0f, float Damping = 1.0f, float Mass = 0.0f);
+//};
+
 class Proyectil : public Particula {
-	Proyectil(Vector3D Pos, Vector3D Vel, Vector3D Acel, Vector4 Color, float Radius = 1.0f, float Damping = 1.0f, float Mass = 0.0f);
+public:
+	Proyectil(ForceGenerator* Generador,
+		const Vector3D& pos = Vector3D(),
+		const Vector3D& vel = Vector3D(),
+		float mass = 1.0f,
+		float damping = 0.99f,
+		float radius = 0.1f,
+		float Gravity = -9.8f,
+		const Vector4& color = Vector4(1.0f, 1.0f, 1.0f, 1.0f));
+
+	virtual ~Proyectil();
+
+	virtual void reiniciarPos();
+	virtual void integrarFuerzas(double dt) override;
+	virtual void escalarFisicas(float velocityScale);
+	void setMasa(float newMass);
+	float getMasaReal() const { return _masaReal; }
+	float getSimulatedMass() const { return _mass; }
+	bool estaActivo() const { return _activo; }
+	void setActivo(bool value) { _activo = value; }
+
+protected:
+	Vector3D _posAux;
+	Vector3D _posInicial;
+	bool _activo = true;
+	float gravityScale;
+	float _masaReal, _gravity;
 };

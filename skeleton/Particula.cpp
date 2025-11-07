@@ -3,6 +3,7 @@
 using namespace physx;
 extern PxMaterial* gMaterial;
 
+//Particula
 Particula::Particula(Vector3D Pos, Vector3D Vel, Vector3D Acel, Vector4 Color, ForceGenerator* GeneradorFuerzas, float Radius, float Damping, float Mass) {
 	_pos = PxTransform({ Pos.X(), Pos.Y(), Pos.Z()});
 	_vel = Vel;
@@ -91,4 +92,79 @@ Particula::integrarVerlet(double t) {
 	_counter++;
 	_timeAlive += t;
 	*/
+}
+
+//Proyectil
+Proyectil::Proyectil(ForceGenerator* Generador, const Vector3D& Pos, const Vector3D& Vel, float Mass,
+	float Damping, float Radius, float Gravity, const Vector4& Color)
+	: Particula(Pos, Vel, Vector3D(0.0f,0.0f,0.0f), Color, Generador, Radius, Damping, Mass)
+	, _posInicial(Pos)
+	, _activo(false)
+	, gravityScale(1.0f)
+	, _masaReal(Mass)
+	, _gravity()
+{
+}
+
+Proyectil::~Proyectil()
+{
+}
+
+void Proyectil::reiniciarPos()
+{
+	_pos.p = PxVec3(_posInicial.X(), _posInicial.Y(), _posInicial.Z());
+	_vel = Vector3D(0, 0, 0);
+	_acumuladorFuerzas = Vector3D(0, 0, 0);
+	_activo = false;
+
+	_mass = _masaReal;
+	if (_mass > 0.0f)
+		_inverseMass = 1.0f / _mass;
+	gravityScale = 1.0f;
+}
+
+void Proyectil::integrarFuerzas(double t)
+{
+	if (!_activo)
+		return;
+
+	if (_inverseMass <= 0.0f)
+		return;
+
+	_generadorFuerzas->updateUnaFuerza(this, t);
+
+	Vector3D scaledGravity = _gravity * gravityScale;
+	Vector3D acceleration = (_acumuladorFuerzas + scaledGravity * _mass) * _inverseMass;
+
+	_vel = _vel + acceleration * t;
+	_pos.p = _pos.p + PxVec3(_vel.X() * t, _vel.Y() * t, _vel.Z() * t);
+	_vel = _vel * pow(_damping, t);
+
+	_acumuladorFuerzas = Vector3D(0.0f, 0.0f, 0.0f);
+}
+
+void Proyectil::escalarFisicas(float velocityScale)
+{
+	if (velocityScale <= 0.0f)
+		return;
+	if (_masaReal <= 0.0f)
+		_masaReal = _mass;
+
+	_vel = _vel * velocityScale;
+
+	float k2 = velocityScale * velocityScale;
+	_mass = _masaReal / k2;
+	if (_mass > 0.0f)
+		_inverseMass = 1.0f / _mass;
+
+	gravityScale = k2;
+}
+
+void Proyectil::setMasa(float newMass)
+{
+	_mass = newMass;
+	if (_mass > 0.0f)
+		_inverseMass = 1.0f / _mass;
+	else
+		_inverseMass = 0.0f;
 }
