@@ -10,8 +10,8 @@ extern PxMaterial* gMaterial;
 
 class Mortero {
 public:
-	Mortero(float size, ForceGenerator* generador, Gravedad* G, Viento* V, float w = 10.0f)
-		: _w(w), _generador(generador), _g(G), _v(V) {
+	Mortero(float size, ForceGenerator* generador, Gravedad* G, Viento* V, Explosion* E, float w = 10.0f)
+		: _w(w), _generador(generador), _g(G), _v(V), _e(E) {
 		PxBoxGeometry cuerpo(size, size * 2, size);
 		PxBoxGeometry pie(size / 2, size*1.5f, size / 2);
 		_cuerpo = new RenderItem(CreateShape(cuerpo, gMaterial), Vector4(0, 0, 0.2, 1));
@@ -27,13 +27,17 @@ public:
 		pieIzq = PxTransform(-90, size*1.5f, -size * 3 / 2);
 		_pieIzq->transform = &pieIzq;
 		
-		_sistemaParticulas = new SistemaParticulas();
+		_sistemaHumo = new SistemaParticulas();
 
 		Emisor* humoMortero = new Emisor(Vector3D(_trCuerpo.p.x, _trCuerpo.p.y + size, _trCuerpo.p.z),
 			Vector3D(size / 1.5, size, size / 1.5), 1, Vector3D(0.2f, 0.2f, 0.2f), Vector3D(0.8f, 0.8f, 0.8f), Vector3D(0.0f, 0.0f, 0.0f),
 			Vector3D(1.0f, 1.0f, 1.0f), Vector4(0.9, 0.9, 0.9, 1), generador, 0.1f, 1.0f, 5.0f, 0.99f, 0.01f, false);
 
-		_sistemaParticulas->AgregarEmisor(humoMortero);
+		_sistemaHumo->AgregarEmisor(humoMortero);
+
+		Emisor* dinaBum = new Emisor(Vector3D(_trCuerpo.p.x, _trCuerpo.p.y + size, _trCuerpo.p.z),
+			Vector3D(size / 1.5, size, size / 1.5), 1, Vector3D(0.2f, 0.2f, 0.2f), Vector3D(0.8f, 0.8f, 0.8f), Vector3D(0.0f, 0.0f, 0.0f),
+			Vector3D(1.0f, 1.0f, 1.0f), Vector4(1, 0, 0, 1), generador, 0.1f, 1.0f, 5.0f, 0.99f, 0.01f, false);
 	}
 	~Mortero();
 
@@ -70,20 +74,20 @@ public:
 			bala = new BalaPiedra(_generador, pos, _direction * 50.0f,
 				4.0f, 0.99f, 3.0f, Vector4(0.2, 0.2, 0.2, 1), true);
 			_proyectiles.push_back(bala);
-			bala->agregarTipoFuerza(_g,true);
-			bala->agregarTipoFuerza(_v, true);
+			bala->agregarTipoFuerza(_g, _gravedadOn);
+			bala->agregarTipoFuerza(_v, _vientoOn);
 			
 			break;
 		case 1:
 			bala = new BalaDinamita(_generador, pos, _direction * 50.0f,
 				2.0f, 0.99f, 3.0f, Vector4(1, 0, 0, 1), true);
 			_proyectiles.push_back(bala);
-			bala->agregarTipoFuerza(_g, true);
-			bala->agregarTipoFuerza(_v, true);
+			bala->agregarTipoFuerza(_g, _gravedadOn);
+			bala->agregarTipoFuerza(_v, _vientoOn);
 			break;
 		}
 		
-		_sistemaParticulas->setEmisorActivo(0, true);
+		_sistemaHumo->setEmisorActivo(0, true);
 		_smokeOn = true;
 	}
 
@@ -91,19 +95,21 @@ public:
 		for (auto& p : _proyectiles) {
 			p->integrarFuerzas(t);
 		}
-		_sistemaParticulas->update(t);
+		_sistemaHumo->update(t);
 
 		//Controla el humo del disparo
 		if (_smokeOn) {
 			_smoketime += t;
 			if (_smoketime >= _smokeTimeMax) {
-				_sistemaParticulas->setEmisorActivo(0, false);
+				_sistemaHumo->setEmisorActivo(0, false);
 				_smokeOn = false;
 				_smoketime = 0;
 			}
 		}
 	}
 
+	void setVientoOnOff() { _vientoOn = !_vientoOn; }
+	void setGravedadOnOff() { _gravedadOn = !_gravedadOn; }
 private:
 	float _w;
 	Vector3D _direction = Vector3D(1.0f, 1.0f, 0.0f);
@@ -117,7 +123,8 @@ private:
 	PxTransform pieIzq;
 
 	std::vector<Proyectil*> _proyectiles;
-	SistemaParticulas* _sistemaParticulas;
+	SistemaParticulas* _sistemaHumo;
+	SistemaParticulas* _sistemaExplosion;
 
 	bool _smokeOn = false;
 	float _smoketime = 0;
@@ -126,5 +133,7 @@ private:
 	ForceGenerator* _generador;
 	Gravedad* _g;
 	Viento* _v;
-	
+	Explosion* _e;
+	bool _gravedadOn = true;
+	bool _vientoOn = true;
 };
