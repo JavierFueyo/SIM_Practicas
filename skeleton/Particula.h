@@ -50,10 +50,6 @@ protected:
 	ForceGenerator* _generadorFuerzas;
 };
 
-//class Proyectil : public Particula {
-//	Proyectil(Vector3D Pos, Vector3D Vel, Vector3D Acel, Vector4 Color, float Radius = 1.0f, float Damping = 1.0f, float Mass = 0.0f);
-//};
-
 class Proyectil : public Particula {
 public:
 	Proyectil(ForceGenerator* Generador,

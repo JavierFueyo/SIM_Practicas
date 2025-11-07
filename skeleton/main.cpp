@@ -20,6 +20,9 @@
 #include "Torbellino.h"
 #include "Explosion.h"
 
+#include "Ground.h"
+#include "BalaCanion.h"
+
 std::string display_text = "This Is A Test";
 
 
@@ -54,9 +57,15 @@ SistemaParticulas* s = new SistemaParticulas();
 ForceGenerator* _generador = new ForceGenerator();
 Gravedad* _gravedad1 = new Gravedad(Vector3D(0.0f, -9.8f, 0.0f));
 Gravedad* _gravedad2 = new Gravedad(Vector3D(0.0f, -5.0f, 0.0f));
-Viento* _viento = new Viento(Vector3D(10.0f,0.0f,0.0f));
+//Viento* _viento = new Viento(Vector3D(10.0f,0.0f,0.0f));
 Torbellino* _torbellino = new Torbellino(Vector3D(0.0f,0.0f,0.0f), 40.0f, 5.0f, 0.1f, 0.0f);
 Explosion* _explosion = new Explosion(Vector3D(0.0f, 0.0f, 0.0f), 50.0f, 10.0f, 1.0f);
+
+
+//Proyecto
+Ground* gGround;
+BalaCanion* gBalaCanion;
+Viento* _viento = new Viento(Vector3D(10.0f, 0.0f, 0.0f));
 
 // Initialize physics engine
 void initPhysics(bool interactive)
@@ -105,22 +114,26 @@ void initPhysics(bool interactive)
 	s->AñadirEmisor(e3);*/
 
 	//Practica 3: Generadores de fuerzas
-	//p = new Particula(Vector3D(0.0f, 0.0f, 0.0f), Vector3D(0.0f, 0.0f, 0.0f), Vector3D(0.0f, 0.0f, 0.0f), Vector4(1, 1, 1, 1), 1.0f, 0.99f, 1.0f);
-	//q = new Particula(Vector3D(0.0f, 0.0f, 0.0f), Vector3D(0.0f, 0.0f, 0.0f), Vector3D(0.0f, 0.0f, 1.0f), Vector4(1, 1, 1, 1), 1.0f, 0.99f, 1.0f);
-	//r = new Particula(Vector3D(1.0f, 0.0f, 1.0f), Vector3D(0.0f, 0.0f, 0.0f), Vector3D(0.0f, 0.0f, 0.0f), Vector4(1, 1, 1, 1), _generador, 1.0f, 0.99f, 1.0f);
-	//generador.add(p, _gravedad1, true);
-	//generador.add(p, _viento, true);
-	//generador.add(q, _gravedad1, true);
-	//generador.add(q, _torbellino, true);
-	
-	/*Emisor* e = new Emisor(Vector3D(0.0f, 0.0f, 0.0f), Vector3D(0.5f, 0.5f, 0.5f), 1,
+	/*p = new Particula(Vector3D(0.0f, 0.0f, 0.0f), Vector3D(0.0f, 0.0f, 0.0f), Vector3D(0.0f, 0.0f, 0.0f), Vector4(1, 1, 1, 1), 1.0f, 0.99f, 1.0f);
+	q = new Particula(Vector3D(0.0f, 0.0f, 0.0f), Vector3D(0.0f, 0.0f, 0.0f), Vector3D(0.0f, 0.0f, 1.0f), Vector4(1, 1, 1, 1), 1.0f, 0.99f, 1.0f);
+	r = new Particula(Vector3D(1.0f, 0.0f, 1.0f), Vector3D(0.0f, 0.0f, 0.0f), Vector3D(0.0f, 0.0f, 0.0f), Vector4(1, 1, 1, 1), _generador, 1.0f, 0.99f, 1.0f);
+	generador.add(p, _gravedad1, true);
+	generador.add(p, _viento, true);
+	generador.add(q, _gravedad1, true);
+	generador.add(q, _torbellino, true);
+	Emisor* e = new Emisor(Vector3D(0.0f, 0.0f, 0.0f), Vector3D(0.5f, 0.5f, 0.5f), 1,
 		Vector3D(1.0f, 1.0f, 1.0f), Vector3D(3.0f, 3.0f, 3.0f), Vector3D(0.0f, 0.0f, 0.0f),
 		Vector3D(1.0f, 1.0f, 1.0f), Vector4(1, 0, 0, 1), _generador, 0.1f, 2.0f, 0.5f, 0.99f, 1.0f, true);
 	s->AgregarEmisor(e);
-	s->AgregarFuerzaSistema(_gravedad1, true);*/
+	s->AgregarFuerzaSistema(_gravedad1, true);
+	proy = new Proyectil(_generador, Vector3D(0.0f, 1.5f, 0.0f), Vector3D(0.0f, 0.0f, 0.0f), 2.0f, 0.99f, 3.0f, -9.8f, Vector4(0.5f, 0.5f, 0.5f, 1.0f));
+	_generador->add(proy, _viento, true);*/
 
-	proy = new Proyectil(_generador, Vector3D(0.0f, 0.0f, 0.0f), Vector3D(0.0f, 0.0f, 0.0f), 2.0f, 0.99f, 10.0f, -9.8f, Vector4(0.5f, 0.5f, 0.5f, 1.0f));
-	_generador->add(proy, _viento, true);
+
+	//Proyecto
+	gGround = new Ground(100.0f);
+	/*gBalaCanion = new BalaCanion(_generador, Vector3D(0.0f, 3.0f, 0.0f), Vector3D(0.0f, 0.0f, 0.0f), 4.0f,
+		0.99, 3.0f, -9.8, Vector4(0.1, 0, 0, 1));*/
 
 	// For Solid Rigids +++++++++++++++++++++++++++++++++++++
 	PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
@@ -154,7 +167,7 @@ void stepPhysics(bool interactive, double t)
 	//p->integrarFuerzas(t);
 	//q->integrarFuerzas(t);
 	//r->integrarFuerzas(t);
-	proy->integrarFuerzas(t);
+	//proy->integrarFuerzas(t);
 
 
 	//for (Particula* q : _partVect) {
@@ -196,7 +209,7 @@ void shootProjectile() {
 	}
 	_partVect.push_back(new Particula(_pos, _dir * 50.0f, Vector3D(0.0f, 0.0f, 0.0f), Vector4(1,1,1,1), 1.0f, 1.0f, 1.0f));*/
 
-	proy->setActivo(true);
+	//proy->setActivo(true);
 }
 
 // Function called when a key is pressed

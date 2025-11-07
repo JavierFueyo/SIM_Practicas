@@ -32,6 +32,8 @@
     <ClInclude Include="Gravedad.h" />
     <ClInclude Include="Torbellino.h" />
     <ClInclude Include="Explosion.h" />
+    <ClInclude Include="Ground.h" />
+    <ClInclude Include="BalaCanion.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Render">
