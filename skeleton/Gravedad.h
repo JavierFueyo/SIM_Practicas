@@ -1,6 +1,7 @@
 #pragma once
 #include "TipoFuerza.h"
 #include "Particula.h"
+#include <iostream>
 
 class Gravedad : public TipoFuerza {
 public:

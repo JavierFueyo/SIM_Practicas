@@ -3,13 +3,14 @@
 using namespace physx;
 extern PxMaterial* gMaterial;
 
-Particula::Particula(Vector3D Pos, Vector3D Vel, Vector3D Acel, Vector4 Color, float Radius, float Damping, float Mass) {
+Particula::Particula(Vector3D Pos, Vector3D Vel, Vector3D Acel, Vector4 Color, ForceGenerator* GeneradorFuerzas, float Radius, float Damping, float Mass) {
 	_pos = PxTransform({ Pos.X(), Pos.Y(), Pos.Z()});
 	_vel = Vel;
 	_acel = Acel;
 	_damping = Damping;
 	_radius = Radius;
 	_mass = Mass;
+	_generadorFuerzas = GeneradorFuerzas;
 
 	if (Mass > 0.0f) {
 		_inverseMass = 1.0f / Mass;
@@ -38,6 +39,9 @@ void
 Particula::integrarFuerzas(double t) {
 	if (_inverseMass <= 0.0f)
 		return;
+
+	//_generadorFuerzas->updateFuerzas(t);
+	_generadorFuerzas->updateUnaFuerza(this, t);
 
 	Vector3D aceleracion = _acumuladorFuerzas * _inverseMass;
 

@@ -32,7 +32,6 @@ public:
             float factorExpo = std::exp(-_tiempoPasado / _constTiempoExpl);
             float magnitudFuerza = (_K / (distanciaMod * distanciaMod)) * factorExpo;
             Vector3D fuerza = distanciaVec.NormalizarVector() * magnitudFuerza;
-            std::cout << "X: " << fuerza.X() << " Y: " << fuerza.Y() << " Z: " << fuerza.Z() << std::endl;
             p->agregarFuerza(fuerza);
         }
 		

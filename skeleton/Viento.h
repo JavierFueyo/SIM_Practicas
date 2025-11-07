@@ -23,8 +23,8 @@ public:
 
         p->agregarFuerza(fuerza);
     }
-    void setWindVelocity(const Vector3D& wVel) { _velViento = wVel; }
 
+    void setWindVelocity(const Vector3D& wVel) { _velViento = wVel; }
 
     const Vector3D& getWindVelocity() const { return _velViento; }
 

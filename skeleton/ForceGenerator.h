@@ -2,6 +2,7 @@
 #include "TipoFuerza.h"
 #include "Particula.h"
 #include "Vector3D.h"
+#include <iostream>
 
 class ForceGenerator {
 private:
@@ -44,6 +45,13 @@ public:
     {
         for (auto& r : registrosDeFuerzas) {
             if (r.activa)
+                r.tF->updateFuerza(r.p, dt);
+        }
+    }
+
+    void updateUnaFuerza(Particula* p, double dt) {
+        for (auto& r : registrosDeFuerzas) {
+            if (r.p == p && r.activa)
                 r.tF->updateFuerza(r.p, dt);
         }
     }
