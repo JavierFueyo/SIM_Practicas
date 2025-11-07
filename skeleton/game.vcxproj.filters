@@ -36,6 +36,7 @@
     <ClInclude Include="Ground.h" />
     <ClInclude Include="BalaPiedra.h" />
     <ClInclude Include="Mortero.h" />
+    <ClInclude Include="BalaDinamita.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Render">

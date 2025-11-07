@@ -22,6 +22,7 @@
 
 #include "Ground.h"
 #include "BalaPiedra.h"
+#include "BalaDinamita.h"
 #include "Mortero.h"
 
 std::string display_text = "This Is A Test";
@@ -65,9 +66,10 @@ Explosion* _explosion = new Explosion(Vector3D(0.0f, 0.0f, 0.0f), 50.0f, 10.0f, 
 
 //Proyecto
 Ground* gGround = nullptr;
-BalaPiedra* gBalaPiedra = nullptr;
 Mortero* gMortero = nullptr;
 Viento* _viento = new Viento(Vector3D(10.0f, 0.0f, 0.0f));
+enum gBalas { BALAPIEDRA = 0, BALADINAMITA = 1 };
+int gBalaElegida = 0;
 
 // Initialize physics engine
 void initPhysics(bool interactive)
@@ -243,7 +245,13 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	}
 	case 'P':
 		//shootProjectile();
-		gMortero->shoot();
+		gMortero->shoot(gBalaElegida);
+		break;
+	case '0':
+		gBalaElegida = BALAPIEDRA;
+		break;
+	case '1':
+		gBalaElegida = BALADINAMITA;
 		break;
 	case 'O':
 		gMortero->rotarUpDown(true);

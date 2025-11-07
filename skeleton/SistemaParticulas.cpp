@@ -48,8 +48,14 @@ void
 Emisor::Integrate(double t) {
 	for (Particula* p : _particulas) {
 		//p->integrarEulerSemiImplicito(t);
-		p->integrarFuerzas(t);
+		if (_on) {
+			p->integrarFuerzas(t);
+		}
+		else {
+			delete p;
+		}
 	}
+	if (!_on) _particulas.clear();
 }
 
 //Sistema particulas
@@ -90,7 +96,7 @@ SistemaParticulas::ControlParticulas() {
 		{
 			Particula* p = *it;
 
-			//regParticulaAFuerzaSistema(p);
+			regParticulaAFuerzaSistema(p);
 			PxTransform pos = p->getPos();
 			float dist2 = pos.p.x * pos.p.x + pos.p.y * pos.p.y + pos.p.z * pos.p.z;
 
