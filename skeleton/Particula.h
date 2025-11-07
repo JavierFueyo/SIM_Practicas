@@ -50,9 +50,12 @@ protected:
 	ForceGenerator* _generadorFuerzas;
 };
 
+enum gBalas { BALAPIEDRA = 0, BALADINAMITA = 1 };
+
 class Proyectil : public Particula {
 public:
 	Proyectil(ForceGenerator* Generador,
+		int type,
 		const Vector3D& pos = Vector3D(),
 		const Vector3D& vel = Vector3D(),
 		float mass = 1.0f,
@@ -72,10 +75,14 @@ public:
 	bool estaActivo() const { return _activo; }
 	void setActivo(bool value) { _activo = value; }
 
+	int getType() {
+		return _type;
+	}
 protected:
 	Vector3D _posAux;
 	Vector3D _posInicial;
 	bool _activo = true;
 	float gravityScale;
 	float _masaReal;
+	int _type;
 };

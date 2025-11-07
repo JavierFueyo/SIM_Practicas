@@ -95,9 +95,10 @@ Particula::integrarVerlet(double t) {
 }
 
 //Proyectil
-Proyectil::Proyectil(ForceGenerator* Generador, const Vector3D& Pos, const Vector3D& Vel, float Mass,
+Proyectil::Proyectil(ForceGenerator* Generador, int Type, const Vector3D& Pos, const Vector3D& Vel, float Mass,
 	float Damping, float Radius, const Vector4& Color, bool Activo)
 	: Particula(Pos, Vel, Vector3D(0.0f,0.0f,0.0f), Color, Generador, Radius, Damping, Mass)
+	, _type(Type)
 	, _posInicial(Pos)
 	, _activo(Activo)
 	, gravityScale(1.0f)

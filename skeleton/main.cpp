@@ -71,7 +71,7 @@ Gravedad* _gravedad = new Gravedad(Vector3D(0.0f, -9.8f, 0.0f));
 Viento* _viento = new Viento(Vector3D(0.0f, 0.0f, 100.0f));
 bool _vientoOn = true;
 Explosion* _explosion = new Explosion(Vector3D(0.0f, 0.0f, 0.0f), 50.0f, 10.0f, 1.0f);
-enum gBalas { BALAPIEDRA = 0, BALADINAMITA = 1 };
+//enum gBalas { BALAPIEDRA = 0, BALADINAMITA = 1 };
 int gBalaElegida = 0;
 
 // Initialize physics engine
@@ -152,12 +152,9 @@ void initPhysics(bool interactive)
 	//Proyecto intermedio
 	gGround = new Ground(100.0f);
 
-	/*gBalaPiedra = new BalaPiedra(_generador, Vector3D(0.0f, 3.0f, 0.0f), Vector3D(0.0f, 0.0f, 0.0f), 4.0f,
-		0.99, 3.0f, -9.8, Vector4(0.1, 0, 0, 1));*/
-
 	gMortero = new Mortero(5.0f, _generador, _gravedad, _viento, _explosion);
 
-	}
+}
 
 
 // Function to configure what happens in each step of physics

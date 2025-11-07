@@ -35,9 +35,15 @@ public:
 
 		_sistemaHumo->AgregarEmisor(humoMortero);
 
+		_sistemaExplosion = new SistemaParticulas();
+
 		Emisor* dinaBum = new Emisor(Vector3D(_trCuerpo.p.x, _trCuerpo.p.y + size, _trCuerpo.p.z),
-			Vector3D(size / 1.5, size, size / 1.5), 1, Vector3D(0.2f, 0.2f, 0.2f), Vector3D(0.8f, 0.8f, 0.8f), Vector3D(0.0f, 0.0f, 0.0f),
-			Vector3D(1.0f, 1.0f, 1.0f), Vector4(1, 0, 0, 1), generador, 0.1f, 1.0f, 5.0f, 0.99f, 0.01f, false);
+			Vector3D(0.2f, 0.2f, 0.2f), 1, Vector3D(0.2f, 0.2f, 0.2f), Vector3D(0.8f, 0.8f, 0.8f), Vector3D(0.0f, 0.0f, 0.0f),
+			Vector3D(1.0f, 1.0f, 1.0f), Vector4(1, 0, 0, 1), generador, 0.1f, 2.0f, 5.0f, 0.99f, 1.0f, false);
+
+		_sistemaExplosion->AgregarEmisor(dinaBum);
+
+		_sistemaExplosion->AgregarFuerzaSistema(_e, false);
 	}
 	~Mortero();
 
@@ -72,7 +78,7 @@ public:
 		switch (i) {
 		case 0:
 			bala = new BalaPiedra(_generador, pos, _direction * 50.0f,
-				4.0f, 0.99f, 3.0f, Vector4(0.2, 0.2, 0.2, 1), true);
+				4.0f, 0.99f, 4.0f, Vector4(0.2, 0.2, 0.2, 1), true);
 			_proyectiles.push_back(bala);
 			bala->agregarTipoFuerza(_g, _gravedadOn);
 			bala->agregarTipoFuerza(_v, _vientoOn);
@@ -80,10 +86,11 @@ public:
 			break;
 		case 1:
 			bala = new BalaDinamita(_generador, pos, _direction * 50.0f,
-				2.0f, 0.99f, 3.0f, Vector4(1, 0, 0, 1), true);
+				2.0f, 0.99f, 2.5f, Vector4(1, 0, 0, 1), true);
 			_proyectiles.push_back(bala);
 			bala->agregarTipoFuerza(_g, _gravedadOn);
 			bala->agregarTipoFuerza(_v, _vientoOn);
+
 			break;
 		}
 		
@@ -94,8 +101,26 @@ public:
 	void update(double t) {
 		for (auto& p : _proyectiles) {
 			p->integrarFuerzas(t);
+
+			if (!_bombOff && p->getType() == BALADINAMITA && p->getPos().p.y < 1.0f && p->getPos().p.y > -1.0f) {
+				_sistemaExplosion->updatePosicionEmisor(0, Vector3D(p->getPos().p.x, p->getPos().p.y, p->getPos().p.z));
+				_sistemaExplosion->setEmisorActivo(0, true);
+				_e->updateCentro(Vector3D(p->getPos().p.x, p->getPos().p.y, p->getPos().p.z));
+				_bombOff = true;
+			}
 		}
 		_sistemaHumo->update(t);
+
+		if (_bombOff) {
+			_sistemaExplosion->update(t);
+			_timeBomb += t;
+			if (_timeBomb >= _timeBombMax) {
+				_sistemaExplosion->setEmisorActivo(0, false);
+				_e->BlowUp();
+				_bombOff = false;
+				_timeBomb = 0;
+			}
+		}
 
 		//Controla el humo del disparo
 		if (_smokeOn) {
@@ -106,6 +131,10 @@ public:
 				_smoketime = 0;
 			}
 		}
+	}
+
+	void Boom(Proyectil* p) {
+
 	}
 
 	void setVientoOnOff() { _vientoOn = !_vientoOn; }
@@ -127,8 +156,12 @@ private:
 	SistemaParticulas* _sistemaExplosion;
 
 	bool _smokeOn = false;
-	float _smoketime = 0;
+	float _smoketime = 0.0f;
 	float _smokeTimeMax = 1.0f;
+
+	bool _bombOff = false;
+	float _timeBomb = 0.0f;
+	float _timeBombMax = 1.5f;
 
 	ForceGenerator* _generador;
 	Gravedad* _g;

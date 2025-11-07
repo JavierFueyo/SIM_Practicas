@@ -39,6 +39,7 @@ public:
 
     void BlowUp() { _activo = true; }
 
+    void updateCentro(Vector3D& other) { _posicionCentro = other; }
 private:
     Vector3D _posicionCentro;
     float _radius, _K, _constTiempoExpl;
