@@ -6,7 +6,7 @@ class Gravedad : public TipoFuerza {
 public:
     Gravedad(const Vector3D& Gravity) : _grav(Gravity) {}
 
-    virtual void updateFuerza(Particula* p, double dt) override
+    virtual void updateFuerza(Particula* p, double t) override
     {
         if (p->getInverseMass() <= 0.0f)
             return;

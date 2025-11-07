@@ -30,17 +30,21 @@ Particula::~Particula() {
 }
 
 void 
+Particula::agregarFuerza(const Vector3D& Fuerza) { 
+	_acumuladorFuerzas = _acumuladorFuerzas + Fuerza;
+}
+
+void 
 Particula::integrarFuerzas(double t) {
 	if (_inverseMass <= 0.0f)
 		return;
-
 
 	Vector3D aceleracion = _acumuladorFuerzas * _inverseMass;
 
 	_vel = _vel + (aceleracion * t);
 	_pos.p = _pos.p + PxVec3(_vel.X() * t, _vel.Y() * t, _vel.Z() * t);
 	_vel = _vel * pow(_damping, t);
-
+	//std::cout << "X: " << _pos.p.x << ", Y: " << _pos.p.y << ", Z: " << _pos.p.z << std::endl;
 	_acumuladorFuerzas = Vector3D(0.0f, 0.0f, 0.0f);
 }
 

@@ -5,7 +5,7 @@
 class Viento : public TipoFuerza {
 public:
     Viento(const Vector3D& VelViento, float k1_ = 0.1f, float k2_ = 0.0f)
-        : _velViento(VelViento), k1(k1_), k2(k2_) {}
+        : _velViento(VelViento), _k1(k1_), _k2(k2_) {}
 
     virtual void updateFuerza(Particula* p, double t) override
     {
@@ -19,7 +19,7 @@ public:
         float magnitud = diferencia.Modulo();
 
         // FuerzaViento = dif * k1 + dif * mag * k2
-        Vector3D fuerza = diferencia * k1 +  diferencia * magnitud * k2;
+        Vector3D fuerza = diferencia * _k1 +  diferencia * magnitud * _k2;
 
         p->agregarFuerza(fuerza);
     }
@@ -30,6 +30,6 @@ public:
 
 protected:
     Vector3D _velViento;  // Velocidad del viento
-    float k1;              // Coeficiente de rozamiento lineal
-    float k2;              // Coeficiente de rozamiento cuadrático (opcional)
+    float _k1;              // Coeficiente de rozamiento lineal
+    float _k2;              // Coeficiente de rozamiento cuadrático (opcional)
 };

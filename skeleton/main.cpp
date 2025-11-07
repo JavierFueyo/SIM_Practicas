@@ -18,6 +18,7 @@
 #include "Gravedad.h"
 #include "Viento.h"
 #include "Torbellino.h"
+#include "Explosion.h"
 
 std::string display_text = "This Is A Test";
 
@@ -39,18 +40,21 @@ PxDefaultCpuDispatcher*	gDispatcher = NULL;
 PxScene*				gScene      = NULL;
 ContactReportCallback gContactReportCallback;
 
+//Practica1
 Particula* p;
 Particula* q;
+Particula* r;
 std::vector<Particula*> _partVect;
 
+//Practica 2
 SistemaParticulas* s;
 
-Gravedad* g1 = new Gravedad(Vector3D(0.0f, -9.8f, 0.0f));
-Gravedad* g2 = new Gravedad(Vector3D(0.0f, -5.0f, 0.0f));
-
-Viento* v = new Viento(Vector3D(0.0f,1.0f,0.0f));
-
-Torbellino* _torbellino = new Torbellino(Vector3D(0.0f,0.0f,0.0f), 40.0f, 50.0f);
+//Practica3
+Gravedad* _gravedad1 = new Gravedad(Vector3D(0.0f, -9.8f, 0.0f));
+Gravedad* _gravedad2 = new Gravedad(Vector3D(0.0f, -5.0f, 0.0f));
+Viento* _viento = new Viento(Vector3D(0.0f,1.0f,0.0f));
+Torbellino* _torbellino = new Torbellino(Vector3D(0.0f,0.0f,0.0f), 40.0f, 5.0f, 0.1f, 0.0f);
+Explosion* _explosion = new Explosion(Vector3D(0.0f, 0.0f, 0.0f), 50.0f, 10.0f, 1.0f);
 
 // Initialize physics engine
 void initPhysics(bool interactive)
@@ -67,24 +71,22 @@ void initPhysics(bool interactive)
 
 	//Ejes de coordenadas
 	gMaterial = gPhysics->createMaterial(0.5f, 0.5f, 0.6f);
-
 	PxSphereGeometry sphere(1.0f);
-
 	//RenderItem* cSphere = new RenderItem(CreateShape(sphere, gMaterial), {1,1,1,1});
-
 	PxTransform* xTransform = new PxTransform({ 10.0f, 0.0f, 0.0f });
 	PxTransform* yTransform = new PxTransform({ 0.0f, 10.0f, 0.0f });
 	PxTransform* zTransform = new PxTransform({ 0.0f, 0.0f, 10.0f });
-
 	//RenderItem* xSphere = new RenderItem(CreateShape(sphere, gMaterial), xTransform, { 1, 0, 0, 1 });
 	//RenderItem* ySphere = new RenderItem(CreateShape(sphere, gMaterial), yTransform, { 0, 1, 0, 1 });
 	//RenderItem* zSphere = new RenderItem(CreateShape(sphere, gMaterial), zTransform, { 0, 0, 1, 1 });
 
+
 	//Practica 1: particula
-	//p = new Particula(Vector3D(0.0f, 0.0f, 0.0f), Vector3D(10.0f, 0.0f, 0.0f), Vector3D(1.0f, 0.0f, 0.0f), 1.0f, 1.0f, 1.0f);
+	/*p = new Particula(Vector3D(0.0f, 0.0f, 0.0f), Vector3D(10.0f, 0.0f, 0.0f), Vector3D(1.0f, 0.0f, 0.0f), 1.0f, 1.0f, 1.0f);
+	*/
 
 	//Practica 2: Sistema de particulas
-	s = new SistemaParticulas();
+	/*s = new SistemaParticulas();
 
 	Emisor* e1 = new Emisor(Vector3D(0.0f, 0.0f, 0.0f), Vector3D(0.5f, 0.5f, 0.5f), 1,
 		Vector3D(1.0f, 1.0f, 1.0f), Vector3D(3.0f, 3.0f, 3.0f), Vector3D(0.0f, 0.0f, 0.0f),
@@ -100,17 +102,18 @@ void initPhysics(bool interactive)
 
 	s->AñadirEmisor(e1);
 	s->AñadirEmisor(e2);
-	s->AñadirEmisor(e3);
+	s->AñadirEmisor(e3);*/
 
 	//Practica 3: Generadores de fuerzas
-	
-	//ForceGenerator generador = ForceGenerator();
-	////p = new Particula(Vector3D(0.0f, 0.0f, 0.0f), Vector3D(0.0f, 0.0f, 0.0f), Vector3D(0.0f, 0.0f, 0.0f), Vector4(1, 1, 1, 1), 1.0f, 0.99f, 1.0f);
-	//q = new Particula(Vector3D(9.0f, 0.0f, 0.0f), Vector3D(0.0f, 0.0f, 1.0f), Vector3D(0.0f, 0.0f, 0.0f), Vector4(1, 1, 1, 1), 1.0f, 0.99f, 1.0f);
-	////generador.add(p, g1, true);
-	////generador.add(p, v, true);
-	//generador.add(q, g1, true);
+	ForceGenerator generador = ForceGenerator();
+	//p = new Particula(Vector3D(0.0f, 0.0f, 0.0f), Vector3D(0.0f, 0.0f, 0.0f), Vector3D(0.0f, 0.0f, 0.0f), Vector4(1, 1, 1, 1), 1.0f, 0.99f, 1.0f);
+	//q = new Particula(Vector3D(0.0f, 0.0f, 0.0f), Vector3D(0.0f, 0.0f, 0.0f), Vector3D(0.0f, 0.0f, 1.0f), Vector4(1, 1, 1, 1), 1.0f, 0.99f, 1.0f);
+	r = new Particula(Vector3D(1.0f, 0.0f, 1.0f), Vector3D(0.0f, 0.0f, 0.0f), Vector3D(0.0f, 0.0f, 0.0f), Vector4(1, 1, 1, 1), 1.0f, 0.99f, 1.0f);
+	//generador.add(p, _gravedad1, true);
+	//generador.add(p, _viento, true);
+	//generador.add(q, _gravedad1, true);
 	//generador.add(q, _torbellino, true);
+	generador.add(r, _explosion, true);
 
 	// For Solid Rigids +++++++++++++++++++++++++++++++++++++
 	PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
@@ -133,14 +136,17 @@ void stepPhysics(bool interactive, double t)
 	//p->integrarEulerSemiImplicito(t);
 	//p->integrarVerlet(t);
 	
-	//g1->updateFuerza(p, t);
-	//g1->updateFuerza(q, t);
-	//v->updateFuerza(p, t);
+	//s->update(t);
+	
+	//_gravedad1->updateFuerza(p, t);
+	//_gravedad1->updateFuerza(q, t);
+	//_viento->updateFuerza(p, t);
 	//_torbellino->updateFuerza(q, t);
+	_explosion->updateFuerza(r, t);
 	//p->integrarFuerzas(t);
 	//q->integrarFuerzas(t);
+	r->integrarFuerzas(t);
 
-	s->update(t);
 
 	for (Particula* q : _partVect) {
 		if (q) q->integrarEulerSemiImplicito(t);
@@ -197,6 +203,10 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	}
 	case 'P':
 		shootProjectile();
+		break;
+	case 'E':
+		std::cout << "E" << std::endl;
+		_explosion->BlowUp();
 		break;
 	default:
 		break;

@@ -31,6 +31,7 @@
     <ClInclude Include="Viento.h" />
     <ClInclude Include="Gravedad.h" />
     <ClInclude Include="Torbellino.h" />
+    <ClInclude Include="Explosion.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Render">

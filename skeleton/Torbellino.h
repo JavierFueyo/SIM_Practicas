@@ -5,7 +5,7 @@
 
 class Torbellino : public Viento {
 public:
-    Torbellino(const Vector3D& PosCentral, float Radius, float K, float k1_ = 0.1f, float k2_ = 0.0f)
+    Torbellino(const Vector3D& PosCentral, float Radius, float K, float k1, float k2)
         : _posCentral(PosCentral), _radius(Radius), _K(K), Viento(Vector3D(0.0f, 0.0f, 0.0f), k1, k2)
     {}
 

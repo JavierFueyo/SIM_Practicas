@@ -58,6 +58,14 @@ public:
 		return ProductoPorEscalar(other);
 	}
 
+	Vector3D operator/(const float &other) {
+		Vector3D res;
+		res._x = _x / other;
+		res._y = _y / other;
+		res._z = _z / other;
+		return res;
+	}
+
 	float X() {
 		return _x;
 	}
