@@ -10,7 +10,8 @@ extern PxMaterial* gMaterial;
 
 class Mortero {
 public:
-	Mortero(float size, ForceGenerator* generador, float w = 10.0f) : _w(w), _generador(generador) {
+	Mortero(float size, ForceGenerator* generador, Gravedad* G, Viento* V, float w = 10.0f)
+		: _w(w), _generador(generador), _g(G), _v(V) {
 		PxBoxGeometry cuerpo(size, size * 2, size);
 		PxBoxGeometry pie(size / 2, size*1.5f, size / 2);
 		_cuerpo = new RenderItem(CreateShape(cuerpo, gMaterial), Vector4(0, 0, 0.2, 1));
@@ -63,14 +64,22 @@ public:
 	void shoot(int i) {
 		Vector3D pos = Vector3D(_trCuerpo.p.x, _trCuerpo.p.y, _trCuerpo.p.z);
 
+		Proyectil* bala;
 		switch (i) {
 		case 0:
-			_proyectiles.push_back(new BalaPiedra(_generador, pos, _direction * 100.0f,
-				4.0, 0.99f, 3.0f, Vector4(0.2, 0.2, 0.2, 1), true));
+			bala = new BalaPiedra(_generador, pos, _direction * 50.0f,
+				4.0f, 0.99f, 3.0f, Vector4(0.2, 0.2, 0.2, 1), true);
+			_proyectiles.push_back(bala);
+			bala->agregarTipoFuerza(_g,true);
+			bala->agregarTipoFuerza(_v, true);
+			
 			break;
 		case 1:
-			_proyectiles.push_back(new BalaDinamita(_generador, pos, _direction * 100.0f,
-				4.0, 0.99f, 3.0f, Vector4(1, 0, 0, 1), true));
+			bala = new BalaDinamita(_generador, pos, _direction * 50.0f,
+				2.0f, 0.99f, 3.0f, Vector4(1, 0, 0, 1), true);
+			_proyectiles.push_back(bala);
+			bala->agregarTipoFuerza(_g, true);
+			bala->agregarTipoFuerza(_v, true);
 			break;
 		}
 		
@@ -97,7 +106,7 @@ public:
 
 private:
 	float _w;
-	Vector3D _direction = Vector3D(0.0f, 1.0f, 0.0f);
+	Vector3D _direction = Vector3D(1.0f, 1.0f, 0.0f);
 	float _ang = PxPi;
 	RenderItem* _cuerpo;
 	RenderItem* _pieDer;
@@ -108,12 +117,14 @@ private:
 	PxTransform pieIzq;
 
 	std::vector<Proyectil*> _proyectiles;
-	ForceGenerator* _generador;
 	SistemaParticulas* _sistemaParticulas;
 
 	bool _smokeOn = false;
 	float _smoketime = 0;
 	float _smokeTimeMax = 1.0f;
 
+	ForceGenerator* _generador;
+	Gravedad* _g;
+	Viento* _v;
 	
 };

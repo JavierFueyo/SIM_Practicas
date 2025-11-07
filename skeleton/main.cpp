@@ -67,7 +67,8 @@ Explosion* _explosion = new Explosion(Vector3D(0.0f, 0.0f, 0.0f), 50.0f, 10.0f, 
 //Proyecto
 Ground* gGround = nullptr;
 Mortero* gMortero = nullptr;
-Viento* _viento = new Viento(Vector3D(10.0f, 0.0f, 0.0f));
+Gravedad* _gravedad = new Gravedad(Vector3D(0.0f, -9.8f, 0.0f));
+Viento* _viento = new Viento(Vector3D(50.0f, 0.0f, 0.0f));
 enum gBalas { BALAPIEDRA = 0, BALADINAMITA = 1 };
 int gBalaElegida = 0;
 
@@ -152,7 +153,7 @@ void initPhysics(bool interactive)
 	/*gBalaPiedra = new BalaPiedra(_generador, Vector3D(0.0f, 3.0f, 0.0f), Vector3D(0.0f, 0.0f, 0.0f), 4.0f,
 		0.99, 3.0f, -9.8, Vector4(0.1, 0, 0, 1));*/
 
-	gMortero = new Mortero(5.0f, _generador);
+	gMortero = new Mortero(5.0f, _generador, _gravedad, _viento);
 
 	}
 
@@ -169,7 +170,6 @@ void stepPhysics(bool interactive, double t)
 	
 	//s->update(t);
 	
-	//_generador->updateFuerzas(t);
 	//_gravedad1->updateFuerza(p, t);
 	//_gravedad1->updateFuerza(q, t);
 	//_viento->updateFuerza(p, t);
@@ -186,6 +186,7 @@ void stepPhysics(bool interactive, double t)
 	//}
 	
 
+	_generador->updateFuerzas(t);
 	gMortero->update(t);
 
 
@@ -261,6 +262,9 @@ void keyPress(unsigned char key, const PxTransform& camera)
 		break;
 	case 'E':
 		_explosion->BlowUp();
+		break;
+	case 'V':
+
 		break;
 	default:
 		break;
