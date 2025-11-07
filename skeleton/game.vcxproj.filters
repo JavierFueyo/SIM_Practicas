@@ -12,6 +12,7 @@
     <ClCompile Include="callbacks.cpp" />
     <ClCompile Include="Particula.cpp" />
     <ClCompile Include="SistemaParticulas.cpp" />
+    <ClCompile Include="Ground.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core.hpp" />
@@ -33,7 +34,8 @@
     <ClInclude Include="Torbellino.h" />
     <ClInclude Include="Explosion.h" />
     <ClInclude Include="Ground.h" />
-    <ClInclude Include="BalaCanion.h" />
+    <ClInclude Include="BalaPiedra.h" />
+    <ClInclude Include="Mortero.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Render">

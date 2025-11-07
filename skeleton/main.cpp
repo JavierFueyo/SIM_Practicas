@@ -21,7 +21,8 @@
 #include "Explosion.h"
 
 #include "Ground.h"
-#include "BalaCanion.h"
+#include "BalaPiedra.h"
+#include "Mortero.h"
 
 std::string display_text = "This Is A Test";
 
@@ -63,8 +64,9 @@ Explosion* _explosion = new Explosion(Vector3D(0.0f, 0.0f, 0.0f), 50.0f, 10.0f, 
 
 
 //Proyecto
-Ground* gGround;
-BalaCanion* gBalaCanion;
+Ground* gGround = nullptr;
+BalaPiedra* gBalaPiedra = nullptr;
+Mortero* gMortero = nullptr;
 Viento* _viento = new Viento(Vector3D(10.0f, 0.0f, 0.0f));
 
 // Initialize physics engine
@@ -79,6 +81,17 @@ void initPhysics(bool interactive)
 	gPvd->connect(*transport,PxPvdInstrumentationFlag::eALL);
 
 	gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale(),true,gPvd);
+
+	
+
+	// For Solid Rigids +++++++++++++++++++++++++++++++++++++
+	PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
+	sceneDesc.gravity = PxVec3(0.0f, -9.8f, 0.0f);
+	gDispatcher = PxDefaultCpuDispatcherCreate(2);
+	sceneDesc.cpuDispatcher = gDispatcher;
+	sceneDesc.filterShader = contactReportFilterShader;
+	sceneDesc.simulationEventCallback = &gContactReportCallback;
+	gScene = gPhysics->createScene(sceneDesc);
 
 	//Ejes de coordenadas
 	gMaterial = gPhysics->createMaterial(0.5f, 0.5f, 0.6f);
@@ -125,24 +138,20 @@ void initPhysics(bool interactive)
 		Vector3D(1.0f, 1.0f, 1.0f), Vector3D(3.0f, 3.0f, 3.0f), Vector3D(0.0f, 0.0f, 0.0f),
 		Vector3D(1.0f, 1.0f, 1.0f), Vector4(1, 0, 0, 1), _generador, 0.1f, 2.0f, 0.5f, 0.99f, 1.0f, true);
 	s->AgregarEmisor(e);
-	s->AgregarFuerzaSistema(_gravedad1, true);
-	proy = new Proyectil(_generador, Vector3D(0.0f, 1.5f, 0.0f), Vector3D(0.0f, 0.0f, 0.0f), 2.0f, 0.99f, 3.0f, -9.8f, Vector4(0.5f, 0.5f, 0.5f, 1.0f));
+	s->AgregarFuerzaSistema(_gravedad1, true);*/
+	/*proy = new Proyectil(_generador, Vector3D(0.0f, 1.5f, 0.0f), Vector3D(0.0f, 0.0f, 0.0f), 2.0f, 0.99f, 3.0f, -9.8f, Vector4(0.5f, 0.5f, 0.5f, 1.0f));
 	_generador->add(proy, _viento, true);*/
 
 
-	//Proyecto
+
+	//Proyecto intermedio
 	gGround = new Ground(100.0f);
-	/*gBalaCanion = new BalaCanion(_generador, Vector3D(0.0f, 3.0f, 0.0f), Vector3D(0.0f, 0.0f, 0.0f), 4.0f,
+
+	/*gBalaPiedra = new BalaPiedra(_generador, Vector3D(0.0f, 3.0f, 0.0f), Vector3D(0.0f, 0.0f, 0.0f), 4.0f,
 		0.99, 3.0f, -9.8, Vector4(0.1, 0, 0, 1));*/
 
-	// For Solid Rigids +++++++++++++++++++++++++++++++++++++
-	PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
-	sceneDesc.gravity = PxVec3(0.0f, -9.8f, 0.0f);
-	gDispatcher = PxDefaultCpuDispatcherCreate(2);
-	sceneDesc.cpuDispatcher = gDispatcher;
-	sceneDesc.filterShader = contactReportFilterShader;
-	sceneDesc.simulationEventCallback = &gContactReportCallback;
-	gScene = gPhysics->createScene(sceneDesc);
+	gMortero = new Mortero(5.0f, _generador);
+
 	}
 
 
@@ -175,6 +184,9 @@ void stepPhysics(bool interactive, double t)
 	//}
 	
 
+	gMortero->update(t);
+
+
 	gScene->simulate(t);
 	gScene->fetchResults(true);
 }
@@ -188,6 +200,10 @@ void cleanupPhysics(bool interactive)
 	// Rigid Body ++++++++++++++++++++++++++++++++++++++++++
 	gScene->release();
 	gDispatcher->release();
+	if (gGround) {
+		delete gGround;
+		gGround = nullptr;
+	}
 	// -----------------------------------------------------
 	gPhysics->release();	
 	PxPvdTransport* transport = gPvd->getTransport();
@@ -226,10 +242,16 @@ void keyPress(unsigned char key, const PxTransform& camera)
 		break;
 	}
 	case 'P':
-		shootProjectile();
+		//shootProjectile();
+		gMortero->shoot();
+		break;
+	case 'O':
+		gMortero->rotarUpDown(true);
+		break;
+	case'L':
+		gMortero->rotarUpDown(false);
 		break;
 	case 'E':
-		std::cout << "E" << std::endl;
 		_explosion->BlowUp();
 		break;
 	default:

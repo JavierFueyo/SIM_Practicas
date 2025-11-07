@@ -96,13 +96,12 @@ Particula::integrarVerlet(double t) {
 
 //Proyectil
 Proyectil::Proyectil(ForceGenerator* Generador, const Vector3D& Pos, const Vector3D& Vel, float Mass,
-	float Damping, float Radius, float Gravity, const Vector4& Color)
+	float Damping, float Radius, const Vector4& Color, bool Activo)
 	: Particula(Pos, Vel, Vector3D(0.0f,0.0f,0.0f), Color, Generador, Radius, Damping, Mass)
 	, _posInicial(Pos)
-	, _activo(false)
+	, _activo(Activo)
 	, gravityScale(1.0f)
 	, _masaReal(Mass)
-	, _gravity()
 {
 }
 
@@ -133,13 +132,13 @@ void Proyectil::integrarFuerzas(double t)
 
 	_generadorFuerzas->updateUnaFuerza(this, t);
 
-	Vector3D scaledGravity = _gravity * gravityScale;
-	Vector3D acceleration = (_acumuladorFuerzas + scaledGravity * _mass) * _inverseMass;
+	Vector3D acceleration = (_acumuladorFuerzas * _mass) * _inverseMass;
 
 	_vel = _vel + acceleration * t;
 	_pos.p = _pos.p + PxVec3(_vel.X() * t, _vel.Y() * t, _vel.Z() * t);
 	_vel = _vel * pow(_damping, t);
 
+	
 	_acumuladorFuerzas = Vector3D(0.0f, 0.0f, 0.0f);
 }
 

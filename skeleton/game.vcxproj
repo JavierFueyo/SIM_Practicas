@@ -254,6 +254,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="callbacks.cpp" />
+    <ClCompile Include="Ground.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Particula.cpp" />
     <ClCompile Include="RenderUtils.cpp" />
@@ -262,13 +263,14 @@
     <ClCompile Include="SistemaParticulas.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BalaCanion.h" />
+    <ClInclude Include="BalaPiedra.h" />
     <ClInclude Include="callbacks.hpp" />
     <ClInclude Include="core.hpp" />
     <ClInclude Include="Explosion.h" />
     <ClInclude Include="ForceGenerator.h" />
     <ClInclude Include="Gravedad.h" />
     <ClInclude Include="Ground.h" />
+    <ClInclude Include="Mortero.h" />
     <ClInclude Include="Particula.h" />
     <ClInclude Include="RenderUtils.hpp" />
     <ClInclude Include="Render\Camera.h" />

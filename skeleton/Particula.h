@@ -58,8 +58,8 @@ public:
 		float mass = 1.0f,
 		float damping = 0.99f,
 		float radius = 0.1f,
-		float Gravity = -9.8f,
-		const Vector4& color = Vector4(1.0f, 1.0f, 1.0f, 1.0f));
+		const Vector4& color = Vector4(1.0f, 1.0f, 1.0f, 1.0f),
+		bool Activo = false);
 
 	virtual ~Proyectil();
 
@@ -77,5 +77,5 @@ protected:
 	Vector3D _posInicial;
 	bool _activo = true;
 	float gravityScale;
-	float _masaReal, _gravity;
+	float _masaReal;
 };

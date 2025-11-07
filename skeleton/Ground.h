@@ -7,9 +7,10 @@ extern PxMaterial* gMaterial;
 
 class Ground {
 public:
-	Ground(float size) {
-		PxBoxGeometry floor(size, 1, size);
-		renderItem = new RenderItem(CreateShape(floor, gMaterial), &PxTransform({0,0,0}), Vector4(0, 1, 0, 1));
+	Ground(float size = 100.0f);
+	~Ground() {
+		DeregisterRenderItem(renderItem);
+		delete renderItem;
 	}
 private:
 	RenderItem* renderItem;
