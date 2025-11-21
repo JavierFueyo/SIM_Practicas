@@ -41,7 +41,6 @@ Particula::integrarFuerzas(double t) {
 	if (_inverseMass <= 0.0f)
 		return;
 
-	//_generadorFuerzas->updateFuerzas(t);
 	_generadorFuerzas->updateUnaFuerza(this, t);
 
 	Vector3D aceleracion = _acumuladorFuerzas * _inverseMass;
