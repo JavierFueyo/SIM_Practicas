@@ -19,6 +19,8 @@
 #include "Viento.h"
 #include "Torbellino.h"
 #include "Explosion.h"
+#include "GeneradorFuerzasMuelle.h"
+#include "GeneradorFuerzasMuelleFijo.h"
 
 #include "Ground.h"
 #include "BalaPiedra.h"
@@ -101,13 +103,13 @@ void initPhysics(bool interactive)
 	//Ejes de coordenadas
 	gMaterial = gPhysics->createMaterial(0.5f, 0.5f, 0.6f);
 	PxSphereGeometry sphere(1.0f);
-	//RenderItem* cSphere = new RenderItem(CreateShape(sphere, gMaterial), {1,1,1,1});
+	/*RenderItem* cSphere = new RenderItem(CreateShape(sphere, gMaterial), {1,1,1,1});
 	PxTransform* xTransform = new PxTransform({ 10.0f, 0.0f, 0.0f });
 	PxTransform* yTransform = new PxTransform({ 0.0f, 10.0f, 0.0f });
 	PxTransform* zTransform = new PxTransform({ 0.0f, 0.0f, 10.0f });
-	//RenderItem* xSphere = new RenderItem(CreateShape(sphere, gMaterial), xTransform, { 1, 0, 0, 1 });
-	//RenderItem* ySphere = new RenderItem(CreateShape(sphere, gMaterial), yTransform, { 0, 1, 0, 1 });
-	//RenderItem* zSphere = new RenderItem(CreateShape(sphere, gMaterial), zTransform, { 0, 0, 1, 1 });
+	RenderItem* xSphere = new RenderItem(CreateShape(sphere, gMaterial), xTransform, { 1, 0, 0, 1 });
+	RenderItem* ySphere = new RenderItem(CreateShape(sphere, gMaterial), yTransform, { 0, 1, 0, 1 });
+	RenderItem* zSphere = new RenderItem(CreateShape(sphere, gMaterial), zTransform, { 0, 0, 1, 1 });*/
 
 
 	//Practica 1: particula
@@ -143,16 +145,28 @@ void initPhysics(bool interactive)
 		Vector3D(1.0f, 1.0f, 1.0f), Vector3D(3.0f, 3.0f, 3.0f), Vector3D(0.0f, 0.0f, 0.0f),
 		Vector3D(1.0f, 1.0f, 1.0f), Vector4(1, 0, 0, 1), _generador, 0.1f, 2.0f, 0.5f, 0.99f, 1.0f, true);
 	s->AgregarEmisor(e);
-	s->AgregarFuerzaSistema(_gravedad1, true);*/
-	/*proy = new Proyectil(_generador, Vector3D(0.0f, 1.5f, 0.0f), Vector3D(0.0f, 0.0f, 0.0f), 2.0f, 0.99f, 3.0f, -9.8f, Vector4(0.5f, 0.5f, 0.5f, 1.0f));
+	s->AgregarFuerzaSistema(_gravedad1, true);
+	proy = new Proyectil(_generador, Vector3D(0.0f, 1.5f, 0.0f), Vector3D(0.0f, 0.0f, 0.0f), 2.0f, 0.99f, 3.0f, -9.8f, Vector4(0.5f, 0.5f, 0.5f, 1.0f));
 	_generador->add(proy, _viento, true);*/
 
+	//Práctica 4: Muelles y flotabilidad
+	p = new Particula(Vector3D(10.0, 10.0, 0.0), Vector3D(0.0, 0.0, 0.0), Vector3D(0.0, 0.0, 0.0),
+		Vector4(1,0,0,1), _generador,5.0f,0.85f,2.0f);
+	q = new Particula(Vector3D(-10.0, 10.0, 0.0), Vector3D(0.0, 0.0, 0.0), Vector3D(0.0, 0.0, 0.0),
+		Vector4(0,1,0,1), _generador,5.0f,0.85f,2.0f);
+	
+	GeneradorFuerzasMuelle* f1 = new GeneradorFuerzasMuelle(1.0,20.0,q);
+	GeneradorFuerzasMuelle* f2 = new GeneradorFuerzasMuelle(1.0,20.0,p);
+	_generador->add(p, f1, true);
+	_generador->add(q, f2, true);
+	
+
+	//Práctica 5: Solidos rígidos
 
 
 	//Proyecto intermedio
-	gGround = new Ground(100.0f);
-
-	gMortero = new Mortero(5.0f, _generador, _gravedad, _viento, _explosion);
+	/*gGround = new Ground(100.0f);
+	gMortero = new Mortero(5.0f, _generador, _gravedad, _viento, _explosion);*/
 
 }
 
@@ -179,15 +193,17 @@ void stepPhysics(bool interactive, double t)
 	//r->integrarFuerzas(t);
 	//proy->integrarFuerzas(t);
 
-
 	//for (Particula* q : _partVect) {
 	//	if (q) q->integrarEulerSemiImplicito(t);
 	//}
 	
-
 	_generador->updateFuerzas(t);
-	gMortero->update(t);
+	p->integrarFuerzas(t);
+	q->integrarFuerzas(t);
 
+	//Proyecto intermedio
+	/*_generador->updateFuerzas(t);
+	gMortero->update(t);*/
 
 	gScene->simulate(t);
 	gScene->fetchResults(true);

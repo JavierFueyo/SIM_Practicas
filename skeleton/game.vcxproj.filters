@@ -37,6 +37,8 @@
     <ClInclude Include="BalaPiedra.h" />
     <ClInclude Include="Mortero.h" />
     <ClInclude Include="BalaDinamita.h" />
+    <ClInclude Include="GeneradorFuerzasMuelle.h" />
+    <ClInclude Include="GeneradorFuerzasMuelleFijo.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Render">

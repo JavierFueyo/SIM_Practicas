@@ -269,6 +269,8 @@
     <ClInclude Include="core.hpp" />
     <ClInclude Include="Explosion.h" />
     <ClInclude Include="ForceGenerator.h" />
+    <ClInclude Include="GeneradorFuerzasMuelle.h" />
+    <ClInclude Include="GeneradorFuerzasMuelleFijo.h" />
     <ClInclude Include="Gravedad.h" />
     <ClInclude Include="Ground.h" />
     <ClInclude Include="Mortero.h" />
