@@ -39,6 +39,7 @@
     <ClInclude Include="BalaDinamita.h" />
     <ClInclude Include="GeneradorFuerzasMuelle.h" />
     <ClInclude Include="GeneradorFuerzasMuelleFijo.h" />
+    <ClInclude Include="Flotacion.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Render">

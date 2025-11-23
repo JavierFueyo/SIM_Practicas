@@ -155,11 +155,17 @@ void initPhysics(bool interactive)
 	q = new Particula(Vector3D(-10.0, 10.0, 0.0), Vector3D(0.0, 0.0, 0.0), Vector3D(0.0, 0.0, 0.0),
 		Vector4(0,1,0,1), _generador,5.0f,0.85f,2.0f);
 	
-	GeneradorFuerzasMuelle* f1 = new GeneradorFuerzasMuelle(1.0,20.0,q);
-	GeneradorFuerzasMuelle* f2 = new GeneradorFuerzasMuelle(1.0,20.0,p);
+	GeneradorFuerzasMuelle* f1 = new GeneradorFuerzasMuelle(1.0, 20.0, q);
+	GeneradorFuerzasMuelle* f2 = new GeneradorFuerzasMuelle(1.0, 20.0, p);
 	_generador->add(p, f1, true);
 	_generador->add(q, f2, true);
+
+	r = new Particula(Vector3D(10.0, -10.0, 0.0), Vector3D(0.0, 0.0, 0.0), Vector3D(0.0, 0.0, 0.0),
+		Vector4(0, 0, 1, 1), _generador, 5.0f, 0.85f, 2.0f);
 	
+	GeneradorFuerzasMuelleFijo* f3 = new GeneradorFuerzasMuelleFijo(1.0, 10.0, Vector3D(10.0, 20.0, 0.0));
+	_generador->add(r, f3, true);
+	_generador->add(r, _gravedad, true);
 
 	//Práctica 5: Solidos rígidos
 
@@ -200,6 +206,7 @@ void stepPhysics(bool interactive, double t)
 	_generador->updateFuerzas(t);
 	p->integrarFuerzas(t);
 	q->integrarFuerzas(t);
+	r->integrarFuerzas(t);
 
 	//Proyecto intermedio
 	/*_generador->updateFuerzas(t);
