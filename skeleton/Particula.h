@@ -26,6 +26,7 @@ public:
 	float getInverseMass() { return _inverseMass; }
 	float getKineticEnergy() { return _mass * _vel.Modulo(); }
 	ForceGenerator* getForceGenerator() { return _generadorFuerzas; }
+	float getRadius() { return _radius; }
 
 	void agregarTipoFuerza(TipoFuerza* tF, bool Activa) {
 		_generadorFuerzas->add(this, tF, Activa);

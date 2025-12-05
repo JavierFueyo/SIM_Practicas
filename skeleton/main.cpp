@@ -21,6 +21,7 @@
 #include "Explosion.h"
 #include "GeneradorFuerzasMuelle.h"
 #include "GeneradorFuerzasMuelleFijo.h"
+#include "Flotacion.h"
 
 #include "Ground.h"
 #include "BalaPiedra.h"
@@ -35,22 +36,23 @@ using namespace physx;
 PxDefaultAllocator		gAllocator;
 PxDefaultErrorCallback	gErrorCallback;
 
-PxFoundation*			gFoundation = NULL;
-PxPhysics*				gPhysics	= NULL;
+PxFoundation* gFoundation = NULL;
+PxPhysics* gPhysics = NULL;
 
 
-PxMaterial*				gMaterial	= NULL;
+PxMaterial* gMaterial = NULL;
 
-PxPvd*                  gPvd        = NULL;
+PxPvd* gPvd = NULL;
 
-PxDefaultCpuDispatcher*	gDispatcher = NULL;
-PxScene*				gScene      = NULL;
+PxDefaultCpuDispatcher* gDispatcher = NULL;
+PxScene* gScene = NULL;
 ContactReportCallback gContactReportCallback;
 
 //Practica1
 Particula* p;
 Particula* q;
 Particula* r;
+Particula* r2;
 //std::vector<Particula*> _partVect;
 Proyectil* proy;
 
@@ -62,9 +64,11 @@ ForceGenerator* _generador = new ForceGenerator();
 Gravedad* _gravedad1 = new Gravedad(Vector3D(0.0f, -9.8f, 0.0f));
 Gravedad* _gravedad2 = new Gravedad(Vector3D(0.0f, -5.0f, 0.0f));
 //Viento* _viento = new Viento(Vector3D(10.0f,0.0f,0.0f));
-Torbellino* _torbellino = new Torbellino(Vector3D(0.0f,0.0f,0.0f), 40.0f, 5.0f, 0.1f, 0.0f);
+Torbellino* _torbellino = new Torbellino(Vector3D(0.0f, 0.0f, 0.0f), 40.0f, 5.0f, 0.1f, 0.0f);
 //Explosion* _explosion = new Explosion(Vector3D(0.0f, 0.0f, 0.0f), 50.0f, 10.0f, 1.0f);
 
+//Practica 4
+//Ground* river = new Ground();
 
 //Proyecto
 Ground* gGround = nullptr;
@@ -85,11 +89,11 @@ void initPhysics(bool interactive)
 
 	gPvd = PxCreatePvd(*gFoundation);
 	PxPvdTransport* transport = PxDefaultPvdSocketTransportCreate(PVD_HOST, 5425, 10);
-	gPvd->connect(*transport,PxPvdInstrumentationFlag::eALL);
+	gPvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
 
-	gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale(),true,gPvd);
+	gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale(), true, gPvd);
 
-	
+
 
 	// For Solid Rigids +++++++++++++++++++++++++++++++++++++
 	PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
@@ -103,8 +107,8 @@ void initPhysics(bool interactive)
 	//Ejes de coordenadas
 	gMaterial = gPhysics->createMaterial(0.5f, 0.5f, 0.6f);
 	PxSphereGeometry sphere(1.0f);
-	/*RenderItem* cSphere = new RenderItem(CreateShape(sphere, gMaterial), {1,1,1,1});
-	PxTransform* xTransform = new PxTransform({ 10.0f, 0.0f, 0.0f });
+	RenderItem* cSphere = new RenderItem(CreateShape(sphere, gMaterial), {1,1,1,1});
+	/*PxTransform* xTransform = new PxTransform({10.0f, 0.0f, 0.0f});
 	PxTransform* yTransform = new PxTransform({ 0.0f, 10.0f, 0.0f });
 	PxTransform* zTransform = new PxTransform({ 0.0f, 0.0f, 10.0f });
 	RenderItem* xSphere = new RenderItem(CreateShape(sphere, gMaterial), xTransform, { 1, 0, 0, 1 });
@@ -150,29 +154,37 @@ void initPhysics(bool interactive)
 	_generador->add(proy, _viento, true);*/
 
 	//Práctica 4: Muelles y flotabilidad
-	p = new Particula(Vector3D(10.0, 10.0, 0.0), Vector3D(0.0, 0.0, 0.0), Vector3D(0.0, 0.0, 0.0),
-		Vector4(1,0,0,1), _generador,5.0f,0.85f,2.0f);
+	/*p = new Particula(Vector3D(10.0, 10.0, 0.0), Vector3D(0.0, 0.0, 0.0), Vector3D(0.0, 0.0, 0.0),
+		Vector4(1, 0, 0, 1), _generador, 5.0f, 0.85f, 2.0f);
 	q = new Particula(Vector3D(-10.0, 10.0, 0.0), Vector3D(0.0, 0.0, 0.0), Vector3D(0.0, 0.0, 0.0),
-		Vector4(0,1,0,1), _generador,5.0f,0.85f,2.0f);
-	
-	GeneradorFuerzasMuelle* f1 = new GeneradorFuerzasMuelle(1.0, 20.0, q);
-	GeneradorFuerzasMuelle* f2 = new GeneradorFuerzasMuelle(1.0, 20.0, p);
+		Vector4(0, 1, 0, 1), _generador, 5.0f, 0.85f, 2.0f);
+
+	GeneradorFuerzasMuelle* f1 = new GeneradorFuerzasMuelle(1.0, 4.0, q);
+	GeneradorFuerzasMuelle* f2 = new GeneradorFuerzasMuelle(1.0, 4.0, p);
 	_generador->add(p, f1, true);
 	_generador->add(q, f2, true);
 
+
 	r = new Particula(Vector3D(10.0, -10.0, 0.0), Vector3D(0.0, 0.0, 0.0), Vector3D(0.0, 0.0, 0.0),
 		Vector4(0, 0, 1, 1), _generador, 5.0f, 0.85f, 2.0f);
-	
-	GeneradorFuerzasMuelleFijo* f3 = new GeneradorFuerzasMuelleFijo(1.0, 10.0, Vector3D(10.0, 20.0, 0.0));
+
+	GeneradorFuerzasMuelleFijo* f3 = new GeneradorFuerzasMuelleFijo(1.0, 10.0, Vector3D(10.0, 0.0, 0.0));
 	_generador->add(r, f3, true);
-	_generador->add(r, _gravedad, true);
+	_generador->add(r, _gravedad, true);*/
+
+	r2 = new Particula(Vector3D(10.0, 0.0, 0.0), Vector3D(0.0, 0.0, 0.0), Vector3D(0.0, 0.0, 0.0),
+		Vector4(0.5, 0, 0.5, 1), _generador, 5.0f, 0.85f, 3.0f);
+
+	Flotacion* f4 = new Flotacion(r2->getRadius()*2.0f, 10.0, 1.3, -100.0, 100.0, -100.0, 100.0);
+	_generador->add(r2, f4, true);
+	_generador->add(r2, _gravedad, true);
 
 	//Práctica 5: Solidos rígidos
 
 
 	//Proyecto intermedio
-	/*gGround = new Ground(100.0f);
-	gMortero = new Mortero(5.0f, _generador, _gravedad, _viento, _explosion);*/
+	//gGround = new Ground(100.0f);
+	//gMortero = new Mortero(5.0f, _generador, _gravedad, _viento, _explosion);*/
 
 }
 
@@ -186,9 +198,9 @@ void stepPhysics(bool interactive, double t)
 
 	//p->integrarEulerSemiImplicito(t);
 	//p->integrarVerlet(t);
-	
+
 	//s->update(t);
-	
+
 	//_gravedad1->updateFuerza(p, t);
 	//_gravedad1->updateFuerza(q, t);
 	//_viento->updateFuerza(p, t);
@@ -202,11 +214,12 @@ void stepPhysics(bool interactive, double t)
 	//for (Particula* q : _partVect) {
 	//	if (q) q->integrarEulerSemiImplicito(t);
 	//}
-	
+
 	_generador->updateFuerzas(t);
-	p->integrarFuerzas(t);
-	q->integrarFuerzas(t);
-	r->integrarFuerzas(t);
+	//q->integrarFuerzas(t);
+	//p->integrarFuerzas(t);
+	//r->integrarFuerzas(t);
+	r2->integrarFuerzas(t);
 
 	//Proyecto intermedio
 	/*_generador->updateFuerzas(t);
@@ -230,13 +243,13 @@ void cleanupPhysics(bool interactive)
 		gGround = nullptr;
 	}
 	// -----------------------------------------------------
-	gPhysics->release();	
+	gPhysics->release();
 	PxPvdTransport* transport = gPvd->getTransport();
 	gPvd->release();
 	transport->release();
-	
+
 	gFoundation->release();
-	}
+}
 
 void shootProjectile() {
 	/*Camera* _cam = GetCamera();
@@ -260,8 +273,8 @@ void keyPress(unsigned char key, const PxTransform& camera)
 
 	switch(toupper(key))
 	{
-	//case 'B': break;
-	//case ' ':	break;
+		//case 'B': break;
+		//case ' ':	break;
 	case ' ':
 	{
 		break;
@@ -307,7 +320,7 @@ void onCollision(physx::PxActor* actor1, physx::PxActor* actor2)
 
 
 
-int main(int, const char*const*)
+int main(int, const char* const*)
 {
 #ifndef OFFLINE_EXECUTION 
 	extern void renderLoop();
@@ -315,7 +328,7 @@ int main(int, const char*const*)
 #else
 	static const PxU32 frameCount = 100;
 	initPhysics(false);
-	for(PxU32 i=0; i<frameCount; i++)
+	for (PxU32 i = 0; i < frameCount; i++)
 		stepPhysics(false);
 	cleanupPhysics(false);
 #endif

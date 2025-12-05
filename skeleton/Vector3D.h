@@ -70,7 +70,7 @@ public:
 	float Y() { return _y; }
 	float Z() { return _z; }
 
-	float setX(float X) { _x = X; }
-	float setY(float Y) { _y = Y; }
-	float setZ(float Z) { _z = Z; }
+	void setX(float X) { _x = X; }
+	void setY(float Y) { _y = Y; }
+	void setZ(float Z) { _z = Z; }
 };
