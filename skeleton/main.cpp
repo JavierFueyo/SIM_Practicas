@@ -107,8 +107,8 @@ void initPhysics(bool interactive)
 	//Ejes de coordenadas
 	gMaterial = gPhysics->createMaterial(0.5f, 0.5f, 0.6f);
 	PxSphereGeometry sphere(1.0f);
-	RenderItem* cSphere = new RenderItem(CreateShape(sphere, gMaterial), {1,1,1,1});
-	/*PxTransform* xTransform = new PxTransform({10.0f, 0.0f, 0.0f});
+	/*RenderItem* cSphere = new RenderItem(CreateShape(sphere, gMaterial), {1,1,1,1});
+	PxTransform* xTransform = new PxTransform({10.0f, 0.0f, 0.0f});
 	PxTransform* yTransform = new PxTransform({ 0.0f, 10.0f, 0.0f });
 	PxTransform* zTransform = new PxTransform({ 0.0f, 0.0f, 10.0f });
 	RenderItem* xSphere = new RenderItem(CreateShape(sphere, gMaterial), xTransform, { 1, 0, 0, 1 });
@@ -154,13 +154,13 @@ void initPhysics(bool interactive)
 	_generador->add(proy, _viento, true);*/
 
 	//Práctica 4: Muelles y flotabilidad
-	/*p = new Particula(Vector3D(10.0, 10.0, 0.0), Vector3D(0.0, 0.0, 0.0), Vector3D(0.0, 0.0, 0.0),
+	p = new Particula(Vector3D(10.0, 10.0, 0.0), Vector3D(0.0, 0.0, 0.0), Vector3D(0.0, 0.0, 0.0),
 		Vector4(1, 0, 0, 1), _generador, 5.0f, 0.85f, 2.0f);
 	q = new Particula(Vector3D(-10.0, 10.0, 0.0), Vector3D(0.0, 0.0, 0.0), Vector3D(0.0, 0.0, 0.0),
 		Vector4(0, 1, 0, 1), _generador, 5.0f, 0.85f, 2.0f);
 
-	GeneradorFuerzasMuelle* f1 = new GeneradorFuerzasMuelle(1.0, 4.0, q);
-	GeneradorFuerzasMuelle* f2 = new GeneradorFuerzasMuelle(1.0, 4.0, p);
+	GeneradorFuerzasMuelle* f1 = new GeneradorFuerzasMuelle(1.0, 5.0, q);
+	GeneradorFuerzasMuelle* f2 = new GeneradorFuerzasMuelle(1.0, 5.0, p);
 	_generador->add(p, f1, true);
 	_generador->add(q, f2, true);
 
@@ -170,12 +170,13 @@ void initPhysics(bool interactive)
 
 	GeneradorFuerzasMuelleFijo* f3 = new GeneradorFuerzasMuelleFijo(1.0, 10.0, Vector3D(10.0, 0.0, 0.0));
 	_generador->add(r, f3, true);
-	_generador->add(r, _gravedad, true);*/
+	_generador->add(r, _gravedad, true);
 
 	r2 = new Particula(Vector3D(10.0, 0.0, 0.0), Vector3D(0.0, 0.0, 0.0), Vector3D(0.0, 0.0, 0.0),
-		Vector4(0.5, 0, 0.5, 1), _generador, 5.0f, 0.85f, 3.0f);
+		Vector4(0.5, 0, 0.5, 1), _generador, 5.0f, 0.85f, 3000.0f);
 
-	Flotacion* f4 = new Flotacion(r2->getRadius()*2.0f, 10.0, 1.3, -100.0, 100.0, -100.0, 100.0);
+	//Liquido: Agua
+	Flotacion* f4 = new Flotacion(r2->getRadius()*2.0f, 10.0, 1000.0f, -100.0, 100.0, -100.0, 100.0);
 	_generador->add(r2, f4, true);
 	_generador->add(r2, _gravedad, true);
 
@@ -216,9 +217,9 @@ void stepPhysics(bool interactive, double t)
 	//}
 
 	_generador->updateFuerzas(t);
-	//q->integrarFuerzas(t);
-	//p->integrarFuerzas(t);
-	//r->integrarFuerzas(t);
+	p->integrarFuerzas(t);
+	q->integrarFuerzas(t);
+	r->integrarFuerzas(t);
 	r2->integrarFuerzas(t);
 
 	//Proyecto intermedio
