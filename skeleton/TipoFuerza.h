@@ -9,7 +9,7 @@ public:
 	virtual ~TipoFuerza() = default;
 	virtual void updateFuerza(Particula* p, double t) = 0;
 	virtual FUERZAS getTipo() = 0;
-	virtual Vector3D getGrav() const {};
+	virtual Vector3D getGrav() const { return Vector3D(); };
 	virtual void setGrav(const Vector3D Gravity) {};
 
 	FUERZAS _tipo;
