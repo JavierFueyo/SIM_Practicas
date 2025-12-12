@@ -4,6 +4,8 @@
 #include "Vector3D.h"
 #include <iostream>
 
+
+
 class ForceGenerator {
 private:
     struct reg {

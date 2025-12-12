@@ -94,14 +94,12 @@ Particula::integrarVerlet(double t) {
 }
 
 //Proyectil
-Proyectil::Proyectil(ForceGenerator* Generador, int Type, const Vector3D& Pos, const Vector3D& Vel, float Mass,
+Proyectil::Proyectil(ForceGenerator* Generador, gBalas Type, const Vector3D& Pos, const Vector3D& Vel, float Mass,
 	float Damping, float Radius, const Vector4& Color, bool Activo)
 	: Particula(Pos, Vel, Vector3D(0.0f,0.0f,0.0f), Color, Generador, Radius, Damping, Mass)
 	, _type(Type)
 	, _posInicial(Pos)
 	, _activo(Activo)
-	, gravityScale(1.0f)
-	, _masaReal(Mass)
 {
 }
 
@@ -116,10 +114,10 @@ void Proyectil::reiniciarPos()
 	_acumuladorFuerzas = Vector3D(0, 0, 0);
 	_activo = false;
 
-	_mass = _masaReal;
+	_mass = _masaEscalada;
 	if (_mass > 0.0f)
 		_inverseMass = 1.0f / _mass;
-	gravityScale = 1.0f;
+	_gravedadEscalada = 1.0f;
 }
 
 void Proyectil::integrarFuerzas(double t)
@@ -132,7 +130,7 @@ void Proyectil::integrarFuerzas(double t)
 
 	_generadorFuerzas->updateUnaFuerza(this, t);
 
-	Vector3D acceleration = (_acumuladorFuerzas * _mass) * _inverseMass;
+	Vector3D acceleration = (_acumuladorFuerzas * _masaEscalada) * _inverseMass;
 
 	_vel = _vel + acceleration * t;
 	_pos.p = _pos.p + PxVec3(_vel.X() * t, _vel.Y() * t, _vel.Z() * t);
@@ -144,19 +142,9 @@ void Proyectil::integrarFuerzas(double t)
 
 void Proyectil::escalarFisicas(float velocityScale)
 {
-	if (velocityScale <= 0.0f)
-		return;
-	if (_masaReal <= 0.0f)
-		_masaReal = _mass;
-
-	_vel = _vel * velocityScale;
-
-	float k2 = velocityScale * velocityScale;
-	_mass = _masaReal / k2;
-	if (_mass > 0.0f)
-		_inverseMass = 1.0f / _mass;
-
-	gravityScale = k2;
+	_masaEscalada = _mass * (_vel.Modulo() * _vel.Modulo()) / velocityScale * velocityScale;
+	_gravedadEscalada = _gravedad * (_vel.Modulo() * _vel.Modulo()) / velocityScale * velocityScale;
+	_fuerzaGravedad->setGrav(_gravedadEscalada);
 }
 
 void Proyectil::setMasa(float newMass)

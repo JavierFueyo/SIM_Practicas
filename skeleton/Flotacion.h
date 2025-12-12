@@ -36,6 +36,7 @@ public:
 
 	virtual ~Flotacion() {}
 
+	FUERZAS getTipo() { return _tipo; }
 protected:
 	float _altura;
 	float _volumen;
@@ -43,4 +44,6 @@ protected:
 	float _x0, _x1, _z0, _z1;
 	float _gravedad = 9.8;
 	float _h0;
+
+	FUERZAS _tipo = FUERZAS::FLOTACION;
 };

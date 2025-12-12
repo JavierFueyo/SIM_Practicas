@@ -22,8 +22,12 @@ public:
 	inline void setK(double k) { _k = k; }
 
 	virtual ~GeneradorFuerzasMuelle(){}
+
+	FUERZAS getTipo() { return _tipo; }
 protected:
 	double _k;
 	double _largoEnReposo;
 	Particula* _p;
+
+	FUERZAS _tipo = FUERZAS::MUELLE_MOVIL;
 };

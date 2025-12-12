@@ -28,8 +28,11 @@ public:
 
     const Vector3D& getWindVelocity() const { return _velViento; }
 
+    FUERZAS getTipo() { return _tipo; }
 protected:
     Vector3D _velViento;  // Velocidad del viento
     float _k1;              // Coeficiente de rozamiento lineal
     float _k2;              // Coeficiente de rozamiento cuadrático (opcional)
+
+    FUERZAS _tipo = FUERZAS::GRAVEDAD;
 };

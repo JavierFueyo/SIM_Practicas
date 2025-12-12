@@ -18,11 +18,15 @@ public:
         p->agregarFuerza(fuerza);
     }
 
-    Vector3D getGrav() const { return _grav; }
+    Vector3D getGrav() const override { return _grav; }
 
-    void setGrav(const Vector3D Gravity) { _grav = Gravity; }
+    void setGrav(const Vector3D Gravity) override { _grav = Gravity; }
 
+    FUERZAS getTipo() { return _tipo; }
+
+    
 private:
     Vector3D _grav;
 
+    FUERZAS _tipo = FUERZAS::GRAVEDAD;
 };

@@ -11,4 +11,8 @@ public:
 	}
 
 	~GeneradorFuerzasMuelleFijo() { delete _p; }
+
+	FUERZAS getTipo() { return _tipo; }
+
+	FUERZAS _tipo = FUERZAS::MUELLE_FIJO;
 };

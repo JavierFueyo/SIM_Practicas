@@ -30,6 +30,10 @@ public:
 
 	void agregarTipoFuerza(TipoFuerza* tF, bool Activa) {
 		_generadorFuerzas->add(this, tF, Activa);
+		if (tF->getTipo() == FUERZAS::GRAVEDAD) {
+			_gravedad = tF->getGrav();
+			_fuerzaGravedad = tF;
+		}
 	}
 	void quitarTipoFuerza(TipoFuerza* tF) { _generadorFuerzas->quitar(this, tF); }
 protected:
@@ -47,6 +51,8 @@ protected:
 	RenderItem* renderItem;
 
 	float _mass, _inverseMass;
+	TipoFuerza* _fuerzaGravedad;
+	Vector3D _gravedad;
 	Vector3D _acumuladorFuerzas;
 	ForceGenerator* _generadorFuerzas;
 };
@@ -56,7 +62,7 @@ enum gBalas { BALAPIEDRA = 0, BALADINAMITA = 1 };
 class Proyectil : public Particula {
 public:
 	Proyectil(ForceGenerator* Generador,
-		int type,
+		gBalas type,
 		const Vector3D& pos = Vector3D(),
 		const Vector3D& vel = Vector3D(),
 		float mass = 1.0f,
@@ -71,19 +77,19 @@ public:
 	virtual void integrarFuerzas(double dt) override;
 	virtual void escalarFisicas(float velocityScale);
 	void setMasa(float newMass);
-	float getMasaReal() const { return _masaReal; }
-	float getSimulatedMass() const { return _mass; }
+	float getMasaReal() const { return _mass; }
+	float getScaledMass() const { return _masaEscalada; }
 	bool estaActivo() const { return _activo; }
 	void setActivo(bool value) { _activo = value; }
 
-	int getType() {
+	gBalas getType() {
 		return _type;
 	}
 protected:
 	Vector3D _posAux;
 	Vector3D _posInicial;
 	bool _activo = true;
-	float gravityScale;
-	float _masaReal;
-	int _type;
+	Vector3D _gravedadEscalada = _gravedad;
+	float _masaEscalada = _mass;
+	gBalas _type;
 };

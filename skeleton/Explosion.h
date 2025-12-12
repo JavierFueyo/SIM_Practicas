@@ -40,6 +40,8 @@ public:
     void BlowUp() { _activo = true; }
 
     void updateCentro(Vector3D& other) { _posicionCentro = other; }
+
+    FUERZAS getTipo() { return _tipo; }
 private:
     Vector3D _posicionCentro;
     float _radius, _K, _constTiempoExpl;
@@ -47,4 +49,6 @@ private:
     float _tiempoPasado = 0;
 
 	Vector3D _fuerzaExplosion;
+
+    FUERZAS _tipo = FUERZAS::EXPLOSION;
 };

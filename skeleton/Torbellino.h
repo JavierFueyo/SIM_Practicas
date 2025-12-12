@@ -25,7 +25,11 @@ public:
         setWindVelocity(_viento);
         Viento::updateFuerza(p, t);
     }
+
+    FUERZAS getTipo() { return _tipo; }
 private:
     Vector3D _posCentral;
     float _radius, _K;
+
+    FUERZAS _tipo = FUERZAS::GRAVEDAD;
 };
