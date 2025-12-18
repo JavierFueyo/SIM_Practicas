@@ -1,8 +1,8 @@
 #include "Ground.h"
 
-Ground::Ground(PxPhysics* Physics, PxScene* Scene, float sizeX, float sizeZ) : gPhysics(Physics), gScene(Scene)
+Ground::Ground(PxPhysics* Physics, PxScene* Scene, float x, float y, float z, float sizeX, float sizeZ) : gPhysics(Physics), gScene(Scene)
 {
-	ground = gPhysics->createRigidStatic(PxTransform({ 0,0,0 }));
+	ground = gPhysics->createRigidStatic(PxTransform({ x,y,z }));
 	PxShape* shape = CreateShape(PxBoxGeometry(sizeX, 1, sizeZ), gMaterial);
 	ground->attachShape(*shape);
 	gScene->addActor(*ground);

@@ -12,8 +12,10 @@ public:
 		_altura(Altura), _volumen(Volumen), _densidadLiquido(Densidad),
 		_x0(x0), _x1(x1), _z0(z0), _z1(z1), _h0(h0)
 	{
-		PxBoxGeometry floor(_x0 - _x1, h0, _z0 - _z1);
-		renderItem = new RenderItem(CreateShape(floor, gMaterial), Vector4(0, 0, 1, 1));
+		/*PxBoxGeometry floor(_x1 - _x0, h0, _z1 - _z0);*/
+		transform = PxTransform((_x0 + (_x1 - _x0) / 2.0f), _h0, (_z0 + (_z1 - _z0) / 2.0f));
+		PxBoxGeometry geometry((_x1 - _x0) / 2.0f, _altura, (_z1 - _z0) / 2.0f);
+		renderItem = new RenderItem(CreateShape(geometry, gMaterial), &transform, Vector4(0, 0, 1, 1));
 	}
 
 	virtual void updateFuerza(Particula* P, double t) {
@@ -37,7 +39,7 @@ public:
 		
 	}
 
-	virtual void updateFuerzaRigidBody(physx::PxRigidDynamic* rigidbody, double t) {
+	virtual void updateFuerzaRigidbody(physx::PxRigidDynamic* rigidbody, double t) override {
 		if (rigidbody->getGlobalPose().p.x > _x0 && rigidbody->getGlobalPose().p.x < _x1
 			&& rigidbody->getGlobalPose().p.z > _z0 && rigidbody->getGlobalPose().p.z < _z1) {
 			float h = rigidbody->getGlobalPose().p.y;
@@ -72,6 +74,7 @@ protected:
 	float _x0, _x1, _z0, _z1;
 	float _gravedad = 9.8;
 	float _h0;
+	PxTransform transform;
 	RenderItem* renderItem;
 
 	FUERZAS _tipo = FUERZAS::FLOTACION;

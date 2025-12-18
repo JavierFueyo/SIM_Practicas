@@ -81,7 +81,8 @@ Explosion* _explosion = new Explosion(Vector3D(0.0f, 0.0f, 0.0f), 50.0f, 10.0f, 
 int gBalaElegida = 0;*/
 
 //Proyecto final
-Ground* gGround = nullptr;
+Ground* gGround1 = nullptr;
+Ground* gGround2 = nullptr;
 Mortero* gMortero = nullptr;
 int Dir = 0;
 ForceGenerator* _generador = new ForceGenerator;
@@ -89,8 +90,7 @@ Gravedad* _gravedad = new Gravedad(Vector3D(0.0f, -9.8f, 0.0f));
 Viento* _viento = new Viento(Vector3D(0.0f, 0.0f, 100.0f));
 bool _vientoOn = true;
 Explosion* _explosion = new Explosion(Vector3D(0.0f, 0.0f, 0.0f), 50.0f, 50.0f, 1.0f);
-int gBalaElegida = 0;
-//Flotacion* _flotación = new Flotacion();
+Flotacion* _flotación = nullptr;
 
 // Initialize physics engine
 void initPhysics(bool interactive)
@@ -104,8 +104,6 @@ void initPhysics(bool interactive)
 	gPvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
 
 	gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale(), true, gPvd);
-
-
 
 	// For Solid Rigids +++++++++++++++++++++++++++++++++++++
 	PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
@@ -126,7 +124,6 @@ void initPhysics(bool interactive)
 	RenderItem* xSphere = new RenderItem(CreateShape(sphere, gMaterial), xTransform, { 1, 0, 0, 1 });
 	RenderItem* ySphere = new RenderItem(CreateShape(sphere, gMaterial), yTransform, { 0, 1, 0, 1 });
 	RenderItem* zSphere = new RenderItem(CreateShape(sphere, gMaterial), zTransform, { 0, 0, 1, 1 });*/
-
 
 	//Practica 1: particula
 	/*p = new Particula(Vector3D(0.0f, 0.0f, 0.0f), Vector3D(10.0f, 0.0f, 0.0f), Vector3D(1.0f, 0.0f, 0.0f), 1.0f, 1.0f, 1.0f);
@@ -197,17 +194,13 @@ void initPhysics(bool interactive)
 	gMortero = new Mortero(5.0f, _generador, _gravedad, _viento, _explosion);*/
 
 	//Proyecto final
-	/*PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
-	gDispatcher = PxDefaultCpuDispatcherCreate(2);
-	sceneDesc.cpuDispatcher = gDispatcher;
-	sceneDesc.filterShader = contactReportFilterShader;
-	sceneDesc.simulationEventCallback = &gContactReportCallback;
-	gScene = gPhysics->createScene(sceneDesc);*/
-
-
-	gGround = new Ground(gPhysics, gScene, 150.0f, 100.0f);
+	
+	//gGround = new Ground(gPhysics, gScene, 0.0f, 0.0f, 0.0f, 150.0f, 100.0f);
+	gGround1 = new Ground(gPhysics, gScene, -75.0f, 0.0f, 0.0f, 75.0f, 100.0f);
+	gGround2 = new Ground(gPhysics, gScene, 125.0f, 0.0f, 0.0f, 25.0f, 100.0f);
 	gMortero = new Mortero(5.0f, _generador, _gravedad, _viento, _explosion, gPhysics, gScene);
 
+	_flotación = new Flotacion(1.0f, 10.0, 1000.0f, 0.0, 100.0, -100.0, 100.0);
 
 	/*PxRigidDynamic* new_solid;
 	new_solid = gPhysics->createRigidDynamic(PxTransform({0,100,0}));
@@ -274,9 +267,13 @@ void cleanupPhysics(bool interactive)
 	// Rigid Body ++++++++++++++++++++++++++++++++++++++++++
 	gScene->release();
 	gDispatcher->release();
-	if (gGround) {
-		delete gGround;
-		gGround = nullptr;
+	if (gGround1) {
+		delete gGround1;
+		gGround1 = nullptr;
+	}
+	if (gGround2) {
+		delete gGround2;
+		gGround1 = nullptr;
 	}
 	// -----------------------------------------------------
 	gPhysics->release();
@@ -317,13 +314,13 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	}
 	case 'P':
 		//shootProjectile();
-		gMortero->shoot(gBalaElegida);
+		gMortero->shoot();
 		break;
 	case '0':
-		gBalaElegida = BALAPIEDRA;
+		gMortero->setBalaElegida(BALAPIEDRA);
 		break;
 	case '1':
-		gBalaElegida = BALADINAMITA;
+		gMortero->setBalaElegida(BALADINAMITA);
 		break;
 	case 'I':
 		gMortero->rotarUpDown(1);

@@ -13,6 +13,7 @@
     <ClCompile Include="Particula.cpp" />
     <ClCompile Include="SistemaParticulas.cpp" />
     <ClCompile Include="Ground.cpp" />
+    <ClCompile Include="Bala.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core.hpp" />
@@ -40,6 +41,7 @@
     <ClInclude Include="GeneradorFuerzasMuelle.h" />
     <ClInclude Include="GeneradorFuerzasMuelleFijo.h" />
     <ClInclude Include="Flotacion.h" />
+    <ClInclude Include="Bala.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Render">

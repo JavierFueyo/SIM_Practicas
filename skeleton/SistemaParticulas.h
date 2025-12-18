@@ -32,6 +32,7 @@ public:
 	float getLifeTime() { return _lifeTime; }
 
 	void setSpawnPos(Vector3D Pos) { _spawnPos = Pos; }
+	Vector3D getSpawnPos() { return _spawnPos; }
 
 	void setID(int i) { _id = i; }
 	int getID() { return _id; }

@@ -7,7 +7,7 @@ extern PxMaterial* gMaterial;
 
 class Ground {
 public:
-	Ground(PxPhysics* Physics, PxScene* Scene, float sizeX = 100.0f, float sizeZ = 100.0f);
+	Ground(PxPhysics* Physics, PxScene* Scene, float x, float y, float z, float sizeX = 100.0f, float sizeZ = 100.0f);
 
 	~Ground() {
 		DeregisterRenderItem(renderItem);

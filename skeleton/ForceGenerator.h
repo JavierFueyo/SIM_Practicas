@@ -15,7 +15,7 @@ private:
         bool activa;
     };
     struct regRB {
-        physx::PxRigidDynamic** rb;
+        PxRigidDynamic* rb;
         TipoFuerza* tF;
         bool activa;
     };
@@ -28,6 +28,10 @@ public:
     {
         registrosDeFuerzas.push_back({ p, tF , activa });
     }
+    void addRB(PxRigidDynamic* rb, TipoFuerza* tF, bool activa)
+    {
+        registrosDeFuerzasRB.push_back({ rb, tF, activa});
+    }
 
     void quitar(Particula* p, TipoFuerza* tF)
     {
@@ -39,8 +43,22 @@ public:
             }),
             registrosDeFuerzas.end());
     }
+    void quitarRB(PxRigidDynamic* rb, TipoFuerza* tF)
+    {
+        registrosDeFuerzasRB.erase(std::remove_if(registrosDeFuerzasRB.begin(),
+            registrosDeFuerzasRB.end(),
+            [=](const regRB& r) {
+                return r.rb == rb &&
+                    r.tF == tF;
+            }),
+            registrosDeFuerzasRB.end());
+    }
 
-    void borrarTodo() { registrosDeFuerzas.clear(); }
+    void borrarTodo() { 
+        registrosDeFuerzas.clear();
+        registrosDeFuerzasRB.clear();
+    }
+
     void setActiva(TipoFuerza* tF, bool activa)
     {
         for (auto& r : registrosDeFuerzas) {
@@ -49,7 +67,23 @@ public:
                 r.activa = activa;
             }
         }
+        for (auto& r : registrosDeFuerzasRB) {
+            if (r.tF == tF)
+            {
+                r.activa = activa;
+            }
+        }
     }
+
+    void setActivaInd(PxRigidDynamic* rb, TipoFuerza* tF, bool activa) {
+        for (auto& r : registrosDeFuerzasRB) {
+            if (r.rb == rb && r.tF == tF)
+            {
+                r.activa = activa;
+            }
+        }
+    }
+
     void updateFuerzas(double dt)
     {
         for (auto& r : registrosDeFuerzas) {
@@ -58,7 +92,7 @@ public:
         }
         for (auto& r : registrosDeFuerzasRB) {
             if (r.activa)
-                r.tF->updateFuerzaRigidbody(*r.rb, dt);
+                r.tF->updateFuerzaRigidbody(r.rb, dt);
         }
     }
 
@@ -66,6 +100,12 @@ public:
         for (auto& r : registrosDeFuerzas) {
             if (r.p == p && r.activa)
                 r.tF->updateFuerza(r.p, dt);
+        }
+    }
+    void updateUnaFuerzaRB(PxRigidDynamic* rb, double dt) {
+        for (auto& r : registrosDeFuerzasRB) {
+            if (r.rb == rb && r.activa)
+                r.tF->updateFuerzaRigidbody(r.rb, dt);
         }
     }
 };

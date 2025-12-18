@@ -253,6 +253,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Bala.cpp" />
     <ClCompile Include="callbacks.cpp" />
     <ClCompile Include="Ground.cpp" />
     <ClCompile Include="main.cpp" />
@@ -263,6 +264,7 @@
     <ClCompile Include="SistemaParticulas.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Bala.h" />
     <ClInclude Include="BalaDinamita.h" />
     <ClInclude Include="BalaPiedra.h" />
     <ClInclude Include="callbacks.hpp" />
