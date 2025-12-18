@@ -83,12 +83,14 @@ int gBalaElegida = 0;*/
 //Proyecto final
 Ground* gGround = nullptr;
 Mortero* gMortero = nullptr;
+int Dir = 0;
 ForceGenerator* _generador = new ForceGenerator;
 Gravedad* _gravedad = new Gravedad(Vector3D(0.0f, -9.8f, 0.0f));
 Viento* _viento = new Viento(Vector3D(0.0f, 0.0f, 100.0f));
 bool _vientoOn = true;
-Explosion* _explosion = new Explosion(Vector3D(0.0f, 0.0f, 0.0f), 50.0f, 10.0f, 1.0f);
+Explosion* _explosion = new Explosion(Vector3D(0.0f, 0.0f, 0.0f), 50.0f, 50.0f, 1.0f);
 int gBalaElegida = 0;
+//Flotacion* _flotación = new Flotacion();
 
 // Initialize physics engine
 void initPhysics(bool interactive)
@@ -194,8 +196,27 @@ void initPhysics(bool interactive)
 	/*gGround = new Ground(100.0f);
 	gMortero = new Mortero(5.0f, _generador, _gravedad, _viento, _explosion);*/
 
-	gGround = new Ground(100.0f);
-	gMortero = new Mortero(5.0f, _generador, _gravedad, _viento, _explosion);
+	//Proyecto final
+	/*PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
+	gDispatcher = PxDefaultCpuDispatcherCreate(2);
+	sceneDesc.cpuDispatcher = gDispatcher;
+	sceneDesc.filterShader = contactReportFilterShader;
+	sceneDesc.simulationEventCallback = &gContactReportCallback;
+	gScene = gPhysics->createScene(sceneDesc);*/
+
+
+	gGround = new Ground(gPhysics, gScene, 150.0f, 100.0f);
+	gMortero = new Mortero(5.0f, _generador, _gravedad, _viento, _explosion, gPhysics, gScene);
+
+
+	/*PxRigidDynamic* new_solid;
+	new_solid = gPhysics->createRigidDynamic(PxTransform({0,100,0}));
+	new_solid->setLinearVelocity({0,5,0});
+	new_solid->setAngularVelocity({0,5,0});
+	PxShape* shape_ad = CreateShape(PxBoxGeometry(5,5,5));
+	new_solid->attachShape(*shape_ad);
+	PxRigidBodyExt::updateMassAndInertia(*new_solid, 0.15);
+	gScene->addActor(*new_solid);*/
 }
 
 
@@ -237,7 +258,8 @@ void stepPhysics(bool interactive, double t)
 
 	//Proyecto final
 	_generador->updateFuerzas(t);
-	gMortero->update(t);
+	gMortero->update(t, Dir, 100.0f);
+
 
 	gScene->simulate(t);
 	gScene->fetchResults(true);
@@ -303,11 +325,19 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	case '1':
 		gBalaElegida = BALADINAMITA;
 		break;
-	case 'O':
-		gMortero->rotarUpDown(true);
+	case 'I':
+		gMortero->rotarUpDown(1);
+		break;
+	case 'K':
+		gMortero->rotarUpDown(-1);
+		break;
+	case 'J':
+		if (Dir == -1) Dir = 0;
+		else Dir = -1;
 		break;
 	case 'L':
-		gMortero->rotarUpDown(false);
+		if (Dir == 1) Dir = 0;
+		else Dir = 1;
 		break;
 	case 'E':
 		_explosion->BlowUp();

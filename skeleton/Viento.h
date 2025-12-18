@@ -24,6 +24,19 @@ public:
         p->agregarFuerza(fuerza);
     }
 
+    virtual void updateFuerzaRigidbody(physx::PxRigidDynamic* rigidbody, double t) override {
+        // Diferencia de velocidad (VelViento - VelParticula)
+        Vector3D diferencia = _velViento - Vector3D(rigidbody->getLinearVelocity().x, rigidbody->getLinearVelocity().y, rigidbody->getLinearVelocity().z);
+
+        // Magnitud del flujo relativo
+        float magnitud = diferencia.Modulo();
+
+        // FuerzaViento = dif * k1 + dif * mag * k2
+        Vector3D fuerza = diferencia * _k1 + diferencia * magnitud * _k2;
+
+        rigidbody->addForce(PxVec3(fuerza.X(), fuerza.Y(), fuerza.Z()));
+    }
+
     void setWindVelocity(const Vector3D& wVel) { _velViento = wVel; }
 
     const Vector3D& getWindVelocity() const { return _velViento; }

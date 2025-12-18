@@ -2,9 +2,10 @@
 #include "TipoFuerza.h"
 #include "Particula.h"
 #include "Vector3D.h"
+#include "PxPhysicsAPI.h"
 #include <iostream>
 
-
+using namespace physx;
 
 class ForceGenerator {
 private:
@@ -13,8 +14,14 @@ private:
         TipoFuerza* tF;
         bool activa;
     };
+    struct regRB {
+        physx::PxRigidDynamic** rb;
+        TipoFuerza* tF;
+        bool activa;
+    };
 
     std::vector<reg> registrosDeFuerzas;
+    std::vector<regRB> registrosDeFuerzasRB;
 
 public:
     void add(Particula* p, TipoFuerza* tF, bool activa)
@@ -48,6 +55,10 @@ public:
         for (auto& r : registrosDeFuerzas) {
             if (r.activa)
                 r.tF->updateFuerza(r.p, dt);
+        }
+        for (auto& r : registrosDeFuerzasRB) {
+            if (r.activa)
+                r.tF->updateFuerzaRigidbody(*r.rb, dt);
         }
     }
 

@@ -19,6 +19,18 @@ public:
 		p->agregarFuerza(fuerza);
 	}
 
+	virtual void updateFuerzaRigidbody(physx::PxRigidDynamic* rigidbody, double t) override {
+		PxVec3 posRel = rigidbody->getGlobalPose().p - _p->getPos().p;
+		Vector3D PosicionRelativa = Vector3D(posRel.x, posRel.y, posRel.z);
+
+		const float largo = PosicionRelativa.NormalizarVector().Modulo();
+		const float delta_x = largo - _largoEnReposo;
+
+		Vector3D fuerza = PosicionRelativa * delta_x * _k;
+
+		rigidbody->addForce(PxVec3(fuerza.X(), fuerza.Y(), fuerza.Z()));
+	}
+
 	inline void setK(double k) { _k = k; }
 
 	virtual ~GeneradorFuerzasMuelle(){}

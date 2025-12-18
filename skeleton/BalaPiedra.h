@@ -14,3 +14,23 @@ public:
 	}
 	~BalaPiedra() {};
 };
+
+//class BalaPiedra {
+//public:
+//	BalaPiedra(ForceGenerator* Generador, const Vector3D& Pos, const Vector3D& Vel, float Mass,
+//		float Damping, float Radius, const Vector4& Color, bool Active)
+//		: radius(Radius)
+//	{
+//
+//	}
+//
+//private:
+//	PxRigidDynamic* rb;
+//	PxScene* gScene;
+//	RenderItem* renderItem;
+//	PxTransform* tr;
+//
+//	float radius;
+//	float baseMass;
+//	Vector4 color;
+//};

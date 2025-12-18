@@ -32,16 +32,44 @@ public:
             float factorExpo = std::exp(-_tiempoPasado / _constTiempoExpl);
             float magnitudFuerza = (_K / (distanciaMod * distanciaMod)) * factorExpo;
             Vector3D fuerza = distanciaVec.NormalizarVector() * magnitudFuerza;
+            std::cout << fuerza.X() << " " << fuerza.Y() << " " << fuerza.Z() << std::endl;;
             p->agregarFuerza(fuerza);
         }
+        else _tiempoPasado = 0.0;
 		
 	}
 
-    void BlowUp() { _activo = true; }
+    virtual void updateFuerzaRigidbody(physx::PxRigidDynamic* rigidbody, double t) override {
+
+        if (_activo) {
+            _tiempoPasado += t;
+            if (_tiempoPasado >= 4.0f * _constTiempoExpl) {
+                _activo = false;
+                return;
+            }
+
+            Vector3D partPos = Vector3D(rigidbody->getGlobalPose().p.x, rigidbody->getGlobalPose().p.y, rigidbody->getGlobalPose().p.z);
+            Vector3D distanciaVec = partPos - _posicionCentro;
+            float distanciaMod = distanciaVec.Modulo();
+
+            if (distanciaMod >= _radius || distanciaMod < 0.001f)
+                return;
+
+            float factorExpo = std::exp(-_tiempoPasado / _constTiempoExpl);
+            float magnitudFuerza = (_K / (distanciaMod * distanciaMod)) * factorExpo;
+            Vector3D fuerza = distanciaVec.NormalizarVector() * magnitudFuerza;
+            rigidbody->addForce(PxVec3(fuerza.X(), fuerza.Y(), fuerza.Z()));
+        }
+
+    }
+
+    void BlowUp() { _activo = !_activo; }
 
     void updateCentro(Vector3D& other) { _posicionCentro = other; }
 
     FUERZAS getTipo() { return _tipo; }
+
+    bool getActive() { return _activo; }
 private:
     Vector3D _posicionCentro;
     float _radius, _K, _constTiempoExpl;

@@ -26,6 +26,23 @@ public:
         Viento::updateFuerza(p, t);
     }
 
+    virtual void updateFuerzaRigidbody(physx::PxRigidDynamic* rigidbody, double t) override {
+
+        Vector3D partPos = Vector3D(rigidbody->getGlobalPose().p.x, rigidbody->getGlobalPose().p.y, rigidbody->getGlobalPose().p.z);
+
+        float _velVientoZ = -(partPos.Z() - _posCentral.Z());
+        float _velVientoY = 50 - (partPos.Y() - _posCentral.Y());
+        float _velVientoX = partPos.X() - _posCentral.X();
+
+        Vector3D _viento = Vector3D(_velVientoX, _velVientoY, _velVientoZ) * _K;
+        float distancia = (partPos - _posCentral).Modulo();
+        if (distancia > _radius) return;
+
+        setWindVelocity(_viento);
+        Viento::updateFuerzaRigidbody(rigidbody, t);
+    }
+
+
     FUERZAS getTipo() { return _tipo; }
 private:
     Vector3D _posCentral;

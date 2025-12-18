@@ -18,6 +18,14 @@ public:
         p->agregarFuerza(fuerza);
     }
 
+    virtual void updateFuerzaRigidbody(physx::PxRigidDynamic* rigidbody, double t) override {
+
+        float pMass = rigidbody->getMass();
+        Vector3D fuerza = _grav * pMass;
+
+        rigidbody->addForce(PxVec3(fuerza.X(), fuerza.Y(), fuerza.Z()));
+    }
+
     Vector3D getGrav() const override { return _grav; }
 
     void setGrav(const Vector3D Gravity) override { _grav = Gravity; }
