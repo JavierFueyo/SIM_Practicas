@@ -14,6 +14,7 @@
     <ClCompile Include="SistemaParticulas.cpp" />
     <ClCompile Include="Ground.cpp" />
     <ClCompile Include="Bala.cpp" />
+    <ClCompile Include="Enemy.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core.hpp" />
@@ -42,6 +43,8 @@
     <ClInclude Include="GeneradorFuerzasMuelleFijo.h" />
     <ClInclude Include="Flotacion.h" />
     <ClInclude Include="Bala.h" />
+    <ClInclude Include="Spawner.h" />
+    <ClInclude Include="Enemy.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Render">

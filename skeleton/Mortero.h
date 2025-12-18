@@ -11,8 +11,8 @@ extern PxMaterial* gMaterial;
 
 class Mortero {
 public:
-	Mortero(float size, ForceGenerator* generador, Gravedad* G, Viento* V, Explosion* E, PxPhysics* Physics, PxScene* Scene, float w = 10.0f)
-		: _w(w), _generador(generador), _g(G), _v(V), _e(E), gPhysics(Physics), gScene(Scene) {
+	Mortero(float size, ForceGenerator* _generador, Gravedad* G, Viento* V, Explosion* E, PxPhysics* Physics, PxScene* Scene, float w = 10.0f)
+		: _w(w), _generador(_generador), _g(G), _v(V), _e(E), gPhysics(Physics), gScene(Scene) {
 
 		_trCuerpo = PxTransform(-130, size * 2, 0);
 		morteroRB = gPhysics->createRigidDynamic(_trCuerpo);
@@ -66,21 +66,20 @@ public:
 		
 		jointDer = PxFixedJointCreate(
 			*gPhysics,
-			morteroRB, PxTransform(PxVec3(0, -size / 2, size * 3 / 2)), // Punto en el cuerpo
-			pieDerRB, PxTransform(PxVec3(0, 0, 0))                    // Punto en el pie
+			morteroRB, PxTransform(PxVec3(0, -size / 2, size * 3 / 2)),
+			pieDerRB, PxTransform(PxVec3(0, 0, 0))
 		);
-
 		jointIzq = PxFixedJointCreate(
 			*gPhysics,
-			morteroRB, PxTransform(PxVec3(0, -size / 2, -size * 3 / 2)), // Punto en el cuerpo
-			pieIzqRB, PxTransform(PxVec3(0, 0, 0))                     // Punto en el pie
+			morteroRB, PxTransform(PxVec3(0, -size / 2, -size * 3 / 2)),
+			pieIzqRB, PxTransform(PxVec3(0, 0, 0))
 		);
 
 		_sistemaHumo = new SistemaParticulas();
 
 		humoMortero = new Emisor(Vector3D(_trCuerpo.p.x, _trCuerpo.p.y + size, _trCuerpo.p.z),
 			Vector3D(size / 1.5, size, size / 1.5), 1, Vector3D(0.2f, 0.2f, 0.2f), Vector3D(0.8f, 0.8f, 0.8f), Vector3D(0.0f, 0.0f, 0.0f),
-			Vector3D(1.0f, 1.0f, 1.0f), Vector4(0.9, 0.9, 0.9, 1), generador, 0.1f, 1.0f, 5.0f, 0.99f, 0.01f, false);
+			Vector3D(1.0f, 1.0f, 1.0f), Vector4(0.9, 0.9, 0.9, 1), _generador, 0.1f, 1.0f, 5.0f, 0.99f, 0.01f, false);
 
 		_sistemaHumo->AgregarEmisor(humoMortero);
 
@@ -88,18 +87,19 @@ public:
 
 		dinaBum = new Emisor(Vector3D(_trCuerpo.p.x, _trCuerpo.p.y + size, _trCuerpo.p.z),
 			Vector3D(0.2f, 0.2f, 0.2f), 1, Vector3D(0.2f, 0.2f, 0.2f), Vector3D(1.5f, 1.5f, 1.5f), Vector3D(0.0f, 0.0f, 0.0f),
-			Vector3D(1.0f, 1.0f, 1.0f), Vector4(1, 0, 0, 1), generador, 0.02f, 1.0f, 1.0f, 0.99f, 1.0f, false);
+			Vector3D(1.0f, 1.0f, 1.0f), Vector4(1, 0, 0, 1), _generador, 0.02f, 1.0f, 1.0f, 0.99f, 1.0f, false);
 
 		_sistemaExplosion->AgregarEmisor(dinaBum);
 
 		_sistemaExplosion->AgregarFuerzaSistema(_e, false);
 
-		_proyectiles.push_back(new BalaPiedra(gPhysics, gScene, _generador, _trCuerpo.p,
+		_proyectiles.push_back(new BalaPiedra(gPhysics, gScene, _generador, PxVec3(-5000,0,0),
 			PxVec3(_direction.X(), _direction.Y(), _direction.Z()),
 			0.99f, 4.0f, Vector4(0.2, 0.2, 0.2, 1), true));
-		_proyectiles.push_back(new BalaDinamita(gPhysics, gScene, _generador, _trCuerpo.p,
+		_proyectiles.push_back(new BalaDinamita(gPhysics, gScene, _generador, PxVec3(-5000, 0, 0),
 			PxVec3(_direction.X(), _direction.Y(), _direction.Z()),
 			0.99f, 2.5f, Vector4(1, 0, 0, 1), true));
+
 	}
 	~Mortero();
 
@@ -197,10 +197,15 @@ public:
 		//	break;
 		//}
 
+		float x = cos(_ang - (PxPi / 2)) * 6.0f;
+		float y = sin(_ang - (PxPi / 2)) * 6.0f;
+
 		_proyectiles[gBalaElegida]->getRB()->clearForce();
 		_proyectiles[gBalaElegida]->getRB()->setLinearVelocity({0,0,0});
 		_proyectiles[gBalaElegida]->getRB()->clearTorque();
-		_proyectiles[gBalaElegida]->getRB()->setGlobalPose(_trCuerpo);
+		_proyectiles[gBalaElegida]->getRB()->setAngularVelocity({ 0,0,0 });
+		_proyectiles[gBalaElegida]->getRB()->setGlobalPose(PxTransform(morteroRB->getGlobalPose().p.x + x,
+			morteroRB->getGlobalPose().p.y + y, morteroRB->getGlobalPose().p.z));
 		_proyectiles[gBalaElegida]->shootBala(_direction.NormalizarVector());
 		
 		_sistemaHumo->setEmisorActivo(0, true);
@@ -269,6 +274,12 @@ public:
 		gBalaElegida = i;
 		_proyectiles[i]->getRB()->wakeUp();
 	}
+
+	PxRigidDynamic* getRB() { return morteroRB; }
+
+	PxRigidDynamic* getBalasRB(int i) { return _proyectiles[i]->getRB(); }
+
+	int getnumBalas() { return _proyectiles.size(); }
 private:
 	PxPhysics* gPhysics = NULL;
 	PxScene* gScene = NULL;

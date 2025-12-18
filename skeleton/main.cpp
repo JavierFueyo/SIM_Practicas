@@ -27,6 +27,7 @@
 #include "BalaPiedra.h"
 #include "BalaDinamita.h"
 #include "Mortero.h"
+#include "Enemy.h"
 
 std::string display_text = "0/1 to change bullets. O/L move mortar up/down. P to shoot. G/V change Gravity/Wind";
 
@@ -356,7 +357,7 @@ void keyPress(unsigned char key, const PxTransform& camera)
 void onCollision(physx::PxActor* actor1, physx::PxActor* actor2)
 {
 	PX_UNUSED(actor1);
-	PX_UNUSED(actor2);
+	PX_UNUSED(actor2);	
 }
 
 

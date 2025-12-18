@@ -255,6 +255,7 @@
   <ItemGroup>
     <ClCompile Include="Bala.cpp" />
     <ClCompile Include="callbacks.cpp" />
+    <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Ground.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Particula.cpp" />
@@ -269,6 +270,7 @@
     <ClInclude Include="BalaPiedra.h" />
     <ClInclude Include="callbacks.hpp" />
     <ClInclude Include="core.hpp" />
+    <ClInclude Include="Enemy.h" />
     <ClInclude Include="Explosion.h" />
     <ClInclude Include="Flotacion.h" />
     <ClInclude Include="ForceGenerator.h" />
@@ -282,6 +284,7 @@
     <ClInclude Include="Render\Camera.h" />
     <ClInclude Include="Render\Render.h" />
     <ClInclude Include="SistemaParticulas.h" />
+    <ClInclude Include="Spawner.h" />
     <ClInclude Include="TipoFuerza.h" />
     <ClInclude Include="Torbellino.h" />
     <ClInclude Include="Vector3D.h" />

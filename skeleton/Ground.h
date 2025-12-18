@@ -1,5 +1,5 @@
 #pragma once
-#include "Vector3D.h";
+#include "Vector3D.h"
 #include "PxPhysicsAPI.h"
 #include "RenderUtils.hpp"
 using namespace physx;
@@ -13,6 +13,8 @@ public:
 		DeregisterRenderItem(renderItem);
 		delete renderItem;
 	}
+
+	PxRigidStatic* getRB() { return ground; };
 
 private:
 	PxPhysics* gPhysics = NULL;
