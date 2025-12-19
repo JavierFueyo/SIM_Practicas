@@ -95,6 +95,14 @@ Flotacion* _flotación = nullptr;
 Enemy* enemy1 = nullptr;
 Enemy* enemy2 = nullptr;
 Enemy* enemy3 = nullptr;
+PxRigidStatic* ground1RB;
+PxRigidStatic* ground2RB;
+PxRigidDynamic* morteroRB;
+PxRigidDynamic* bala1RB;
+PxRigidDynamic* bala2RB;
+PxRigidDynamic* enemy1RB;
+PxRigidDynamic* enemy2RB;
+PxRigidDynamic* enemy3RB;
 
 // Initialize physics engine
 void initPhysics(bool interactive)
@@ -199,19 +207,29 @@ void initPhysics(bool interactive)
 
 	//Proyecto final
 	
-
 	gGround1 = new Ground(gPhysics, gScene, -75.0f, 0.0f, 0.0f, 75.0f, 100.0f);
 	gGround2 = new Ground(gPhysics, gScene, 125.0f, 0.0f, 0.0f, 25.0f, 100.0f);
 	gMortero = new Mortero(5.0f, _generador, _gravedad, _viento, _explosion, gPhysics, gScene);
 
 	enemy1 = new Enemy(gPhysics, gScene, _generador, gMortero->getRB(), 140.0f, 10.0f, 0.0f, 10.0f, 20.0f, 10.0f);
-	enemy2 = new Enemy(gPhysics, gScene, _generador, gMortero->getRB(), 140.0f, 10.0f, -90.0f, 10.0f, 20.0f, 10.0f);
-	enemy3 = new Enemy(gPhysics, gScene, _generador, gMortero->getRB(), 140.0f, 10.0f, 90.0f, 10.0f, 20.0f, 10.0f);
-
+	//enemy2 = new Enemy(gPhysics, gScene, _generador, gMortero->getRB(), 140.0f, 10.0f, -90.0f, 10.0f, 20.0f, 10.0f);
+	//enemy3 = new Enemy(gPhysics, gScene, _generador, gMortero->getRB(), 140.0f, 10.0f, 90.0f, 10.0f, 20.0f, 10.0f);
 
 	_flotación = new Flotacion(2.0f, 200.0f, 1000.0f, 0.0f, 100.0f, -100.0f, 100.0f, 1.0f);
 
+
+	ground1RB = gGround1->getRB();
+	ground1RB = gGround2->getRB();
+	morteroRB = gMortero->getRB();
+	bala1RB = gMortero->getBalasRB(0);
+	bala2RB = gMortero->getBalasRB(1);
+	enemy1RB = enemy1->getRB();
+	//enemy2RB = enemy2->getRB();
+	//enemy3RB = enemy3->getRB();
+
+
 	enemy1->agregarTipoFuerza(_flotación, true);
+	enemy1->agregarTipoFuerza(_explosion, true);
 }
 
 
@@ -255,8 +273,8 @@ void stepPhysics(bool interactive, double t)
 	_generador->updateFuerzas(t);
 	gMortero->update(t, Dir, 100.0f);
 	enemy1->update(t);
-	enemy2->update(t);
-	enemy3->update(t);
+	//enemy2->update(t);
+	//enemy3->update(t);
 
 	gScene->simulate(t);
 	gScene->fetchResults(true);
@@ -362,7 +380,15 @@ void onCollision(physx::PxActor* actor1, physx::PxActor* actor2)
 	PX_UNUSED(actor1);
 	PX_UNUSED(actor2);	
 
-
+	if ((actor1 == bala2RB && actor2 == enemy1RB)
+		|| (actor2 == bala2RB && actor1 == enemy1RB)
+		|| (actor1 == bala2RB && actor2 == ground1RB)
+		|| (actor2 == bala2RB && actor1 == ground1RB)
+		|| (actor1 == bala2RB && actor2 == ground2RB)
+		|| (actor2 == bala2RB && actor1 == ground2RB))
+	{
+		gMortero->crashed();
+	}
 }
 
 

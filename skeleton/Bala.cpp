@@ -1,15 +1,15 @@
 #include "Bala.h"
 
 Bala::Bala(PxPhysics* physx, PxScene* Scene, ForceGenerator* Generador, const PxVec3& Pos, const PxVec3& Vel,
-	float Damping, float Radius, const Vector4& Color, bool Active)
-	: gPhysx(physx), gScene(Scene), _generador(Generador), type()
+	float Damping, float Radius, const Vector4& Color, bool Active, int tipo)
+	: gPhysx(physx), gScene(Scene), _generador(Generador), type(tipo)
 {
 
 	rb = gPhysx->createRigidDynamic(PxTransform(Pos));
 	PxShape* shape = CreateShape(PxSphereGeometry((PxReal)Radius), gMaterial);
 	rb->attachShape(*shape);
 	rb->setLinearDamping(Damping);
-	PxRigidBodyExt::updateMassAndInertia(*rb, 1500.0);
+	PxRigidBodyExt::updateMassAndInertia(*rb, 1000.0);
 
 	gScene->addActor(*rb);
 	renderItem = new RenderItem(shape, rb, Color);
@@ -53,8 +53,8 @@ Bala::clearFuerzas() {
 void
 Bala::shootBala(Vector3D direction) {
 	PxVec3 dir(direction.X(), direction.Y(), direction.Z());
-	std::cout << dir.x << " " << dir.y << " " << dir.z << std::endl;
-	rb->addForce(dir);
+	//std::cout << dir.x << " " << dir.y << " " << dir.z << std::endl;
+	rb->setLinearVelocity(dir * 50.0f);
 }
 
 //void

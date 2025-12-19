@@ -52,7 +52,7 @@ Enemy::update(double t) {
 
 	PxVec3 dir = (_morteroRB->getGlobalPose().p - enemyRB->getGlobalPose().p);
 	dir = dir.getNormalized();
-	std::cout << dir.x << " " << dir.y << " " << dir.z << std::endl;
+	//std::cout << dir.x << " " << dir.y << " " << dir.z << std::endl;
 	enemyRB->addForce(dir * 25000.0f);
 	if (enemyRB->getGlobalPose().p.y <= -50.0f) timeFalling += t;
 	if (timeFalling >= respawnTime) respawn();

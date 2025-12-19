@@ -10,7 +10,7 @@ extern PxMaterial* gMaterial;
 class Bala {
 public:
 	Bala(PxPhysics* physx, PxScene* Scene, ForceGenerator* Generador, const PxVec3& Pos, const PxVec3& Vel,
-		float Damping, float Radius, const Vector4& Color, bool Active);
+		float Damping, float Radius, const Vector4& Color, bool Active, int tipo);
 
 	~Bala();
 	void agregarTipoFuerza(TipoFuerza* tF, bool activo = true);
