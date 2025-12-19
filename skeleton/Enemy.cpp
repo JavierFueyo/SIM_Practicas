@@ -21,7 +21,19 @@ Enemy::Enemy(PxPhysics* Physics, PxScene* Scene, ForceGenerator* Generador, PxRi
 	renderItem = new RenderItem(shape, enemyRB, Vector4(1, 1, 0, 1));
 }
 
-Enemy::~Enemy(){}
+Enemy::~Enemy() {
+	if (renderItem) {
+		DeregisterRenderItem(renderItem);
+		delete renderItem;
+		renderItem = nullptr;
+	}
+
+	if (enemyRB && gScene) {
+		gScene->removeActor(*enemyRB);
+		enemyRB->release();
+		enemyRB = nullptr;
+	}
+}
 
 void
 Enemy::agregarTipoFuerza(TipoFuerza* tF, bool activo) {

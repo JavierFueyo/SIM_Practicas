@@ -25,6 +25,8 @@ Bala::~Bala() {
 		gScene->removeActor(*rb);
 		rb->release();
 	}
+	fuerzas.clear();
+	fuerzasAct.clear();
 }
 void
 Bala::agregarTipoFuerza(TipoFuerza* tF, bool activo) {

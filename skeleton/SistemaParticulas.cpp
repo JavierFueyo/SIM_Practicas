@@ -61,11 +61,14 @@ Emisor::Integrate(double t) {
 //Sistema particulas
 SistemaParticulas::~SistemaParticulas()
 {
+	for (auto* e : _emisores) {
+		delete e;
+	}
+	_emisores.clear();
 	for (auto& ip : _particulas) {
 		delete ip.p;
 	}
 	_particulas.clear();
-	_emisores.clear();
 }
 
 void

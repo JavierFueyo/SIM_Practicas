@@ -18,6 +18,14 @@ public:
 		renderItem = new RenderItem(CreateShape(geometry, gMaterial), &transform, Vector4(0, 0, 1, 1));
 	}
 
+	virtual ~Flotacion() {
+		if (renderItem) {
+			DeregisterRenderItem(renderItem);
+			delete renderItem;
+			renderItem = nullptr;
+		}
+	}
+
 	virtual void updateFuerza(Particula* P, double t) {
 		if (P->getPos().p.x > _x0 && P->getPos().p.x < _x1 && P->getPos().p.z > _z0 && P->getPos().p.z < _z1) {
 			float h = P->getPos().p.y;
@@ -63,8 +71,6 @@ public:
 
 
 	inline void setDens(float Densidad) { _densidadLiquido = Densidad; }
-
-	virtual ~Flotacion() {}
 
 	FUERZAS getTipo() { return _tipo; }
 protected:

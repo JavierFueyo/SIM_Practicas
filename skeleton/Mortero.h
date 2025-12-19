@@ -102,11 +102,63 @@ public:
 			0.0f, 2.5f, Vector4(1, 0, 0, 1), true, 1));
 		
 		for (int i = 0; i < _proyectiles.size(); i++) {
-			_proyectiles[i]->agregarTipoFuerza(_v, false);
+			_proyectiles[i]->agregarTipoFuerza(_v, true);
 		}
 	}
 
-	~Mortero();
+	~Mortero() {
+		if (jointDer) {
+			jointDer->release();
+			jointDer = nullptr;
+		}
+		if (jointIzq) {
+			jointIzq->release();
+			jointIzq = nullptr;
+		}
+		for (auto* bala : _proyectiles) {
+			delete bala;
+		}
+		_proyectiles.clear();
+		if (_sistemaHumo) {
+			delete _sistemaHumo;
+			_sistemaHumo = nullptr;
+		}
+
+		if (_sistemaExplosion) {
+			delete _sistemaExplosion;
+			_sistemaExplosion = nullptr;
+		}
+		if (_cuerpo) {
+			DeregisterRenderItem(_cuerpo);
+			delete _cuerpo;
+			_cuerpo = nullptr;
+		}
+		if (_pieDer) {
+			DeregisterRenderItem(_pieDer);
+			delete _pieDer;
+			_pieDer = nullptr;
+		}
+		if (_pieIzq) {
+			DeregisterRenderItem(_pieIzq);
+			delete _pieIzq;
+			_pieIzq = nullptr;
+		}
+		if (morteroRB && gScene) {
+			gScene->removeActor(*morteroRB);
+			morteroRB->release();
+			morteroRB = nullptr;
+		}
+		if (pieDerRB && gScene) {
+			gScene->removeActor(*pieDerRB);
+			pieDerRB->release();
+			pieDerRB = nullptr;
+		}
+		if (pieIzqRB && gScene) {
+			gScene->removeActor(*pieIzqRB);
+			pieIzqRB->release();
+			pieIzqRB = nullptr;
+		}
+	}
 
 	void rotarUpDown(int Dir) {
 

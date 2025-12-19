@@ -29,7 +29,7 @@
 #include "Mortero.h"
 #include "Enemy.h"
 
-std::string display_text = "0/1 to change bullets. O/L move mortar up/down. P to shoot. G/V change Gravity/Wind";
+std::string display_text = " I/K move mortar up/down. J/L move mortar left/right. 0/1 to change bullets. P to shoot. V change Wind";
 
 
 using namespace physx;
@@ -88,7 +88,7 @@ Mortero* gMortero = nullptr;
 int Dir = 0;
 ForceGenerator* _generador = new ForceGenerator;
 Gravedad* _gravedad = new Gravedad(Vector3D(0.0f, -9.8f, 0.0f));
-Viento* _viento = new Viento(Vector3D(0.0f, 0.0f, 100.0f));
+Viento* _viento = new Viento(Vector3D(0.0f, 0.0f, 10000.0f));
 bool _vientoOn = true;
 Explosion* _explosion = new Explosion(Vector3D(0.0f, 0.0f, 0.0f), 100.0f, 50.0f, 1.0f);
 Flotacion* _flotación = nullptr;
@@ -299,17 +299,30 @@ void cleanupPhysics(bool interactive)
 {
 	PX_UNUSED(interactive);
 
+	if (enemy1) { delete enemy1; enemy1 = nullptr; }
+	if (enemy2) { delete enemy2; enemy2 = nullptr; }
+	if (enemy3) { delete enemy3; enemy3 = nullptr; }
+	if (gMortero) { delete gMortero; gMortero = nullptr; }
+	if (gGround1) { delete gGround1; gGround1 = nullptr; }
+	if (gGround2) { delete gGround2; gGround2 = nullptr; }
+	if (_flotación) { delete _flotación; _flotación = nullptr; }
+	if (_explosion) { delete _explosion; _explosion = nullptr; }
+	if (_viento) { delete _viento; _viento = nullptr; }
+	if (_gravedad) { delete _gravedad; _gravedad = nullptr; }
+	if (_generador) { _generador->borrarTodo();delete _generador;_generador = nullptr; }
+	ground1RB = nullptr;
+	ground2RB = nullptr;
+	morteroRB = nullptr;
+	bala1RB = nullptr;
+	bala2RB = nullptr;
+	enemy1RB = nullptr;
+	enemy2RB = nullptr;
+	enemy3RB = nullptr;
+
 	// Rigid Body ++++++++++++++++++++++++++++++++++++++++++
 	gScene->release();
 	gDispatcher->release();
-	if (gGround1) {
-		delete gGround1;
-		gGround1 = nullptr;
-	}
-	if (gGround2) {
-		delete gGround2;
-		gGround1 = nullptr;
-	}
+	
 	// -----------------------------------------------------
 	gPhysics->release();
 	PxPvdTransport* transport = gPvd->getTransport();
