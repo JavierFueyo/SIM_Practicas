@@ -20,5 +20,5 @@ class BalaPiedra : public Bala {
 public:
 	BalaPiedra(PxPhysics* Physx, PxScene* Scene, ForceGenerator* Generador, const PxVec3& Pos, const PxVec3& Vel,
 		float Damping, float Radius, const Vector4& Color, bool Active)
-		: Bala(Physx, Scene, Generador, Pos, Vel, Damping,Radius,Color,Active) {}
+		: Bala(Physx, Scene, Generador, Pos, Vel, Damping, Radius, Color, Active) {}
 };

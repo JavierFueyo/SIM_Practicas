@@ -1,5 +1,6 @@
 #pragma once
 #include <PxPhysicsAPI.h>
+#include "Vector3D.h"
 class Particula;
 
 enum FUERZAS { GRAVEDAD = 0, VIENTO = 1, TORBELLINO = 2, EXPLOSION = 3, MUELLE_MOVIL = 4, MUELLE_FIJO = 5, FLOTACION = 6 };

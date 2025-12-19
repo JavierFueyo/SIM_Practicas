@@ -16,7 +16,8 @@ public:
 
 		_trCuerpo = PxTransform(-130, size * 2, 0);
 		morteroRB = gPhysics->createRigidDynamic(_trCuerpo);
-		PxShape* _cuerpoShape = CreateShape(PxBoxGeometry(size, size * 2, size));
+		PxMaterial* material = gPhysics->createMaterial(0.0f, 0.0f, 0.1f);
+		PxShape* _cuerpoShape = CreateShape(PxBoxGeometry(size, size * 2, size), material);
 		morteroRB->attachShape(*_cuerpoShape);
 		PxRigidBodyExt::updateMassAndInertia(*morteroRB, 0.1);
 		morteroRB->setLinearVelocity(PxVec3(0, 0, 0));
@@ -32,7 +33,7 @@ public:
 
 		pieDer = PxTransform(-130, size*1.5f, size * 3 / 2);
 		pieDerRB = gPhysics->createRigidDynamic(pieDer);
-		PxShape* _pieShape = CreateShape(PxBoxGeometry(size / 2, size * 1.5f, size / 2));
+		PxShape* _pieShape = CreateShape(PxBoxGeometry(size / 2, size * 1.5f, size / 2), material);
 		pieDerRB->attachShape(*_pieShape);
 		PxRigidBodyExt::updateMassAndInertia(*pieDerRB, 0.1);
 		pieDerRB->setLinearVelocity(PxVec3(0, 0, 0));
@@ -95,12 +96,16 @@ public:
 
 		_proyectiles.push_back(new BalaPiedra(gPhysics, gScene, _generador, PxVec3(-5000,0,0),
 			PxVec3(_direction.X(), _direction.Y(), _direction.Z()),
-			0.99f, 4.0f, Vector4(0.2, 0.2, 0.2, 1), true));
+			0.01f, 4.0f, Vector4(0.2, 0.2, 0.2, 1), true));
 		_proyectiles.push_back(new BalaDinamita(gPhysics, gScene, _generador, PxVec3(-5000, 0, 0),
 			PxVec3(_direction.X(), _direction.Y(), _direction.Z()),
-			0.99f, 2.5f, Vector4(1, 0, 0, 1), true));
-
+			0.01f, 2.5f, Vector4(1, 0, 0, 1), true));
+		
+		for (int i = 0; i < _proyectiles.size(); i++) {
+			_proyectiles[i]->agregarTipoFuerza(_v, false);
+		}
 	}
+
 	~Mortero();
 
 	void rotarUpDown(int Dir) {
@@ -141,7 +146,7 @@ public:
 
 		if (Dir == -1 && morteroRB->getGlobalPose().p.z > -limit) {
 			//std::cout << Dir << std::endl;
-			morteroRB->addForce(PxVec3(0, 0, Dir * 3666.67), PxForceMode::eFORCE);
+			morteroRB->addForce(PxVec3(0, 0, Dir * 200.0), PxForceMode::eFORCE);
 			/*pieIzqRB->addForce(PxVec3(0, 0, Dir * 500), PxForceMode::eFORCE);
 			pieDerRB->addForce(PxVec3(0, 0, Dir * 500), PxForceMode::eFORCE);*/
 			pieIzq = pieIzqRB->getGlobalPose();
@@ -153,7 +158,7 @@ public:
 		}
 		else if (Dir == 1 && morteroRB->getGlobalPose().p.z < limit) {
 			//std::cout << Dir << std::endl;
-			morteroRB->addForce(PxVec3(0, 0, Dir * 3666.67), PxForceMode::eFORCE);
+			morteroRB->addForce(PxVec3(0, 0, Dir * 200.0), PxForceMode::eFORCE);
 			/*pieIzqRB->addForce(PxVec3(0, 0, Dir * 500), PxForceMode::eFORCE);
 			pieDerRB->addForce(PxVec3(0, 0, Dir * 500), PxForceMode::eFORCE);*/
 			pieDer = pieDerRB->getGlobalPose();
@@ -262,7 +267,12 @@ public:
 		}
 	}
 
-	void setVientoOnOff() { _vientoOn = !_vientoOn; }
+	void setVientoOnOff() {
+		_vientoOn = !_vientoOn;
+		for (int i = 0; i < _proyectiles.size(); i++) {
+			_proyectiles[i]->setFuerzaActiva(_v, _vientoOn);
+		}
+	}
 	void setGravedadOnOff() { _gravedadOn = !_gravedadOn; }
 
 	void setBalaElegida(int i){

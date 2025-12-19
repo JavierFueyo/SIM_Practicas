@@ -92,6 +92,9 @@ Viento* _viento = new Viento(Vector3D(0.0f, 0.0f, 100.0f));
 bool _vientoOn = true;
 Explosion* _explosion = new Explosion(Vector3D(0.0f, 0.0f, 0.0f), 50.0f, 50.0f, 1.0f);
 Flotacion* _flotación = nullptr;
+Enemy* enemy1 = nullptr;
+Enemy* enemy2 = nullptr;
+Enemy* enemy3 = nullptr;
 
 // Initialize physics engine
 void initPhysics(bool interactive)
@@ -196,21 +199,19 @@ void initPhysics(bool interactive)
 
 	//Proyecto final
 	
-	//gGround = new Ground(gPhysics, gScene, 0.0f, 0.0f, 0.0f, 150.0f, 100.0f);
+
 	gGround1 = new Ground(gPhysics, gScene, -75.0f, 0.0f, 0.0f, 75.0f, 100.0f);
 	gGround2 = new Ground(gPhysics, gScene, 125.0f, 0.0f, 0.0f, 25.0f, 100.0f);
 	gMortero = new Mortero(5.0f, _generador, _gravedad, _viento, _explosion, gPhysics, gScene);
 
-	_flotación = new Flotacion(1.0f, 10.0, 1000.0f, 0.0, 100.0, -100.0, 100.0);
+	enemy1 = new Enemy(gPhysics, gScene, _generador, gMortero->getRB(), 140.0f, 10.0f, 0.0f, 10.0f, 20.0f, 10.0f);
+	enemy2 = new Enemy(gPhysics, gScene, _generador, gMortero->getRB(), 140.0f, 10.0f, -90.0f, 10.0f, 20.0f, 10.0f);
+	enemy3 = new Enemy(gPhysics, gScene, _generador, gMortero->getRB(), 140.0f, 10.0f, 90.0f, 10.0f, 20.0f, 10.0f);
 
-	/*PxRigidDynamic* new_solid;
-	new_solid = gPhysics->createRigidDynamic(PxTransform({0,100,0}));
-	new_solid->setLinearVelocity({0,5,0});
-	new_solid->setAngularVelocity({0,5,0});
-	PxShape* shape_ad = CreateShape(PxBoxGeometry(5,5,5));
-	new_solid->attachShape(*shape_ad);
-	PxRigidBodyExt::updateMassAndInertia(*new_solid, 0.15);
-	gScene->addActor(*new_solid);*/
+
+	_flotación = new Flotacion(2.0f, 200.0f, 1000.0f, 0.0f, 100.0f, -100.0f, 100.0f, 1.0f);
+
+	enemy1->agregarTipoFuerza(_flotación, true);
 }
 
 
@@ -253,7 +254,9 @@ void stepPhysics(bool interactive, double t)
 	//Proyecto final
 	_generador->updateFuerzas(t);
 	gMortero->update(t, Dir, 100.0f);
-
+	enemy1->update(t);
+	enemy2->update(t);
+	enemy3->update(t);
 
 	gScene->simulate(t);
 	gScene->fetchResults(true);
@@ -358,6 +361,8 @@ void onCollision(physx::PxActor* actor1, physx::PxActor* actor2)
 {
 	PX_UNUSED(actor1);
 	PX_UNUSED(actor2);	
+
+
 }
 
 

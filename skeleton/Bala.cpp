@@ -9,7 +9,7 @@ Bala::Bala(PxPhysics* physx, PxScene* Scene, ForceGenerator* Generador, const Px
 	PxShape* shape = CreateShape(PxSphereGeometry((PxReal)Radius), gMaterial);
 	rb->attachShape(*shape);
 	rb->setLinearDamping(Damping);
-	PxRigidBodyExt::updateMassAndInertia(*rb, 200.0);
+	PxRigidBodyExt::updateMassAndInertia(*rb, 1500.0);
 
 	gScene->addActor(*rb);
 	renderItem = new RenderItem(shape, rb, Color);

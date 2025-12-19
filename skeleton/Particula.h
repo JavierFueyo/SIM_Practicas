@@ -1,5 +1,5 @@
 #pragma once
-#include "Vector3D.h";
+#include "Vector3D.h"
 #include "PxPhysicsAPI.h"
 #include "RenderUtils.hpp"
 #include "ForceGenerator.h"

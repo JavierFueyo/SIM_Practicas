@@ -1,12 +1,14 @@
 #pragma once
+#include <vector>
+#include <algorithm>
 #include "TipoFuerza.h"
-#include "Particula.h"
 #include "Vector3D.h"
 #include "PxPhysicsAPI.h"
 #include <iostream>
 
 using namespace physx;
 
+class Particula;
 class ForceGenerator {
 private:
     struct reg {
