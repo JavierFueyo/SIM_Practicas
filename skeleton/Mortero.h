@@ -121,7 +121,6 @@ public:
 				float x = cos(_ang - (PxPi / 2)) * 2.5f;
 				float y = sin(_ang - (PxPi / 2)) * 2.5f;
 				humoMortero->setSpawnPos(Vector3D(morteroRB->getGlobalPose().p.x+x, morteroRB->getGlobalPose().p.y + y, morteroRB->getGlobalPose().p.z));
-				//std::cout << _ang << " " << _w << std::endl;
 			}
 
 		}
@@ -134,8 +133,6 @@ public:
 				float x = cos(_ang - (PxPi / 2)) * 2.5f;
 				float y = sin(_ang - (PxPi / 2)) * 2.5f;
 				humoMortero->setSpawnPos(Vector3D(morteroRB->getGlobalPose().p.x + x, morteroRB->getGlobalPose().p.y + y, morteroRB->getGlobalPose().p.z));
-
-				//std::cout << _ang << " " << _w << std::endl;
 			}
 		}
 
@@ -145,7 +142,6 @@ public:
 	void moverLR(double t, int Dir, float limit) {
 
 		if (Dir == -1 && morteroRB->getGlobalPose().p.z > -limit) {
-			//std::cout << Dir << std::endl;
 			if (prevDir == 1) morteroRB->clearForce();
 			morteroRB->addForce(PxVec3(0, 0, Dir * 20.0), PxForceMode::eIMPULSE);
 			pieIzq = pieIzqRB->getGlobalPose();
@@ -154,7 +150,6 @@ public:
 			prevDir = Dir;
 		}
 		else if (Dir == 1 && morteroRB->getGlobalPose().p.z < limit) {
-			//std::cout << Dir << std::endl;
 			if (prevDir == -1) morteroRB->clearForce();
 			morteroRB->addForce(PxVec3(0, 0, Dir * 20.0), PxForceMode::eIMPULSE);
 			pieDer = pieDerRB->getGlobalPose();
@@ -163,13 +158,11 @@ public:
 			prevDir = Dir;
 		}
 		else {
-			//std::cout << Dir << std::endl;
 			morteroRB->setLinearVelocity(PxVec3(0, 0, 0));
 			morteroRB->clearForce();
 			_trCuerpo = morteroRB->getGlobalPose();
 			pieDer = pieDerRB->getGlobalPose();
 			pieIzq = pieIzqRB->getGlobalPose();
-			//std::cout << pieIzq.p.z << " " << _trCuerpo.p.z << " " << pieDer.p.z << std::endl;
 			prevDir = Dir;
 		}
 	}
@@ -177,36 +170,14 @@ public:
 	//void addProyectil(Proyectil* pr) { _proyectiles.push_back(pr); }
 
 	void shoot() {
-		Vector3D pos = Vector3D(_trCuerpo.p.x, _trCuerpo.p.y, _trCuerpo.p.z);
-
-		//switch (gBalaElegida) {
-		//case 0:
-		//	/*bala = new BalaPiedra(_generador, pos, _direction * 100.0f,
-		//		4.0f, 0.99f, 4.0f, Vector4(0.2, 0.2, 0.2, 1), true);
-		//	_proyectiles.push_back(bala);
-		//	bala->agregarTipoFuerza(_g, _gravedadOn);
-		//	bala->agregarTipoFuerza(_v, _vientoOn);*/
-		//	break;
-		//case 1:
-		//	/*bala = new BalaDinamita(_generador, pos, _direction * 100.0f,
-		//		2.0f, 0.99f, 2.5f, Vector4(1, 0, 0, 1), true);
-		//	_proyectiles.push_back(bala);
-		//	bala->agregarTipoFuerza(_g, _gravedadOn);
-		//	bala->agregarTipoFuerza(_v, _vientoOn);*/
-
-		//	break;
-		//}
 
 		float x = cos(_ang - (PxPi / 2)) * 20.0f;
 		float y = sin(_ang - (PxPi / 2)) * 20.0f;
 
-		//_proyectiles[gBalaElegida]->getRB()->setLinearVelocity({0,0,0});
 		_proyectiles[gBalaElegida]->getRB()->clearTorque();
-		//_proyectiles[gBalaElegida]->getRB()->setAngularVelocity({ 0,0,0 });
 		_proyectiles[gBalaElegida]->getRB()->clearForce();
 		_proyectiles[gBalaElegida]->getRB()->setGlobalPose(PxTransform(morteroRB->getGlobalPose().p.x + x,
 			morteroRB->getGlobalPose().p.y + y, morteroRB->getGlobalPose().p.z));
-		std::cout << _direction.X() << " " << _direction.Y() << " " << _direction.Z() << std::endl;
 		_proyectiles[gBalaElegida]->shootBala(_direction.NormalizarVector());
 		
 		_sistemaHumo->setEmisorActivo(0, true);
@@ -220,20 +191,19 @@ public:
 
 
 		//Actualiza proyectiles
-		if (_crashed && !_bombOff && _proyectiles[gBalaElegida]->getType() == BALADINAMITA /*&&
-			_proyectiles[gBalaElegida]->getRB()->getGlobalPose().p.y < 1.0f &&
-			_proyectiles[gBalaElegida]->getRB()->getGlobalPose().p.y > -1.0f*/)
+		if (_crashed && !_bombOff && _proyectiles[gBalaElegida]->getType() == BALADINAMITA)
 		{
-			_e->updateCentro(Vector3D(_proyectiles[gBalaElegida]->getRB()->getGlobalPose().p.x,
-				_proyectiles[gBalaElegida]->getRB()->getGlobalPose().p.y,
-				_proyectiles[gBalaElegida]->getRB()->getGlobalPose().p.z));
-
-			_sistemaExplosion->updatePosicionEmisor(0, Vector3D((_proyectiles[gBalaElegida]->getRB()->getGlobalPose().p.x,
-				_proyectiles[gBalaElegida]->getRB()->getGlobalPose().p.y,
-				_proyectiles[gBalaElegida]->getRB()->getGlobalPose().p.z)));
-
-			_sistemaExplosion->setEmisorActivo(0, true);
 			_bombOff = true;
+			_crashed = false;
+			_e->updateCentro(Vector3D(_proyectiles.at(gBalaElegida)->getRB()->getGlobalPose().p.x,
+				_proyectiles.at(gBalaElegida)->getRB()->getGlobalPose().p.y,
+				_proyectiles.at(gBalaElegida)->getRB()->getGlobalPose().p.z));
+			
+			_sistemaExplosion->updatePosicionEmisor(0, Vector3D(_proyectiles.at(gBalaElegida)->getRB()->getGlobalPose().p.x,
+				_proyectiles.at(gBalaElegida)->getRB()->getGlobalPose().p.y,
+				_proyectiles.at(gBalaElegida)->getRB()->getGlobalPose().p.z));
+			
+			_sistemaExplosion->setEmisorActivo(0, true);
 		}
 		_sistemaHumo->update(t);
 		
@@ -248,7 +218,6 @@ public:
 				if (_e->getActive())_e->BlowUp();
 				_sistemaExplosion->setEmisorActivo(0, false);
 				_bombOff = false;
-				_crashed = false;
 				_timeBomb = 0;
 			}
 		}

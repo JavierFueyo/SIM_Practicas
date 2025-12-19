@@ -9,7 +9,7 @@ Bala::Bala(PxPhysics* physx, PxScene* Scene, ForceGenerator* Generador, const Px
 	PxShape* shape = CreateShape(PxSphereGeometry((PxReal)Radius), gMaterial);
 	rb->attachShape(*shape);
 	rb->setLinearDamping(Damping);
-	PxRigidBodyExt::updateMassAndInertia(*rb, 1000.0);
+	PxRigidBodyExt::updateMassAndInertia(*rb, 2200.0);
 
 	gScene->addActor(*rb);
 	renderItem = new RenderItem(shape, rb, Color);
@@ -53,17 +53,5 @@ Bala::clearFuerzas() {
 void
 Bala::shootBala(Vector3D direction) {
 	PxVec3 dir(direction.X(), direction.Y(), direction.Z());
-	//std::cout << dir.x << " " << dir.y << " " << dir.z << std::endl;
 	rb->setLinearVelocity(dir * 50.0f);
 }
-
-//void
-//Bala::integrarFuerzas(double dt) {
-//	if (!rb) return;
-//
-//	for (int i = 0; i < fuerzas.size(); i++) {
-//		if (fuerzasAct[i] && fuerzas[i]) {
-//			fuerzas[i]->updateFuerzaRigidbody(rb, dt);
-//		}
-//	}
-//}

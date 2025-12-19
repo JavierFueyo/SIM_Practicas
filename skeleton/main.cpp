@@ -90,7 +90,7 @@ ForceGenerator* _generador = new ForceGenerator;
 Gravedad* _gravedad = new Gravedad(Vector3D(0.0f, -9.8f, 0.0f));
 Viento* _viento = new Viento(Vector3D(0.0f, 0.0f, 100.0f));
 bool _vientoOn = true;
-Explosion* _explosion = new Explosion(Vector3D(0.0f, 0.0f, 0.0f), 50.0f, 50.0f, 1.0f);
+Explosion* _explosion = new Explosion(Vector3D(0.0f, 0.0f, 0.0f), 100.0f, 50.0f, 1.0f);
 Flotacion* _flotación = nullptr;
 Enemy* enemy1 = nullptr;
 Enemy* enemy2 = nullptr;
@@ -103,6 +103,9 @@ PxRigidDynamic* bala2RB;
 PxRigidDynamic* enemy1RB;
 PxRigidDynamic* enemy2RB;
 PxRigidDynamic* enemy3RB;
+bool crashed = false;
+float cooltime = 5.0f;
+float coolTimeleft = 5.0f;
 
 // Initialize physics engine
 void initPhysics(bool interactive)
@@ -212,8 +215,8 @@ void initPhysics(bool interactive)
 	gMortero = new Mortero(5.0f, _generador, _gravedad, _viento, _explosion, gPhysics, gScene);
 
 	enemy1 = new Enemy(gPhysics, gScene, _generador, gMortero->getRB(), 140.0f, 10.0f, 0.0f, 10.0f, 20.0f, 10.0f);
-	//enemy2 = new Enemy(gPhysics, gScene, _generador, gMortero->getRB(), 140.0f, 10.0f, -90.0f, 10.0f, 20.0f, 10.0f);
-	//enemy3 = new Enemy(gPhysics, gScene, _generador, gMortero->getRB(), 140.0f, 10.0f, 90.0f, 10.0f, 20.0f, 10.0f);
+	enemy2 = new Enemy(gPhysics, gScene, _generador, gMortero->getRB(), 140.0f, 10.0f, -90.0f, 10.0f, 20.0f, 10.0f);
+	enemy3 = new Enemy(gPhysics, gScene, _generador, gMortero->getRB(), 140.0f, 10.0f, 90.0f, 10.0f, 20.0f, 10.0f);
 
 	_flotación = new Flotacion(2.0f, 200.0f, 1000.0f, 0.0f, 100.0f, -100.0f, 100.0f, 1.0f);
 
@@ -224,12 +227,16 @@ void initPhysics(bool interactive)
 	bala1RB = gMortero->getBalasRB(0);
 	bala2RB = gMortero->getBalasRB(1);
 	enemy1RB = enemy1->getRB();
-	//enemy2RB = enemy2->getRB();
-	//enemy3RB = enemy3->getRB();
+	enemy2RB = enemy2->getRB();
+	enemy3RB = enemy3->getRB();
 
 
 	enemy1->agregarTipoFuerza(_flotación, true);
 	enemy1->agregarTipoFuerza(_explosion, true);
+	enemy2->agregarTipoFuerza(_flotación, true);
+	enemy2->agregarTipoFuerza(_explosion, true);
+	enemy3->agregarTipoFuerza(_flotación, true);
+	enemy3->agregarTipoFuerza(_explosion, true);
 }
 
 
@@ -273,11 +280,17 @@ void stepPhysics(bool interactive, double t)
 	_generador->updateFuerzas(t);
 	gMortero->update(t, Dir, 100.0f);
 	enemy1->update(t);
-	//enemy2->update(t);
-	//enemy3->update(t);
+	enemy2->update(t);
+	enemy3->update(t);
 
 	gScene->simulate(t);
 	gScene->fetchResults(true);
+
+	if(crashed) coolTimeleft -= t;
+	if (coolTimeleft <= 0) {
+		crashed = false;
+		coolTimeleft = cooltime;
+	}
 }
 
 // Function to clean data
@@ -381,13 +394,28 @@ void onCollision(physx::PxActor* actor1, physx::PxActor* actor2)
 	PX_UNUSED(actor2);	
 
 	if ((actor1 == bala2RB && actor2 == enemy1RB)
-		|| (actor2 == bala2RB && actor1 == enemy1RB)
-		|| (actor1 == bala2RB && actor2 == ground1RB)
-		|| (actor2 == bala2RB && actor1 == ground1RB)
-		|| (actor1 == bala2RB && actor2 == ground2RB)
-		|| (actor2 == bala2RB && actor1 == ground2RB))
+		|| (actor2 == bala2RB && actor1 == enemy1RB))
 	{
-		gMortero->crashed();
+		if (!crashed) {
+			gMortero->crashed();
+			crashed = !crashed;
+		}
+	}
+	if ((actor1 == bala2RB && actor2 == enemy2RB)
+		|| (actor2 == bala2RB && actor1 == enemy2RB))
+	{
+		if (!crashed) {
+			gMortero->crashed();
+			crashed = !crashed;
+		}
+	}
+	if ((actor1 == bala2RB && actor2 == enemy3RB)
+		|| (actor2 == bala2RB && actor1 == enemy3RB))
+	{
+		if (!crashed) {
+			gMortero->crashed();
+			crashed = !crashed;
+		}
 	}
 }
 

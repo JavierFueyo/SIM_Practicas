@@ -16,7 +16,6 @@ public:
 	void agregarTipoFuerza(TipoFuerza* tF, bool activo = true);
 	void setFuerzaActiva(TipoFuerza* tF, bool activo);
 	void clearFuerzas();
-	//void integrarFuerzas(double dt);
 
 	void shootBala(Vector3D direccion);
 

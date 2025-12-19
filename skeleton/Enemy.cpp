@@ -26,25 +26,11 @@ Enemy::~Enemy(){}
 void
 Enemy::agregarTipoFuerza(TipoFuerza* tF, bool activo) {
 	_generador->addRB(enemyRB, tF, activo);
-	/*fuerzas.push_back(tF);
-	fuerzasAct.push_back(activo);*/
 }
 
 void
 Enemy::setFuerzaActiva(TipoFuerza* tF, bool activo) {
 	_generador->setActivaInd(enemyRB, tF, activo);
-	/*for (int i = 0; i < fuerzas.size(); ++i) {
-		if (fuerzas[i] == tF) {
-			fuerzasAct[i] = activo;
-			return;
-		}
-	}*/
-}
-
-void
-Enemy::clearFuerzas() {
-	/*fuerzas.clear();
-	fuerzasAct.clear();*/
 }
 
 void
@@ -52,7 +38,6 @@ Enemy::update(double t) {
 
 	PxVec3 dir = (_morteroRB->getGlobalPose().p - enemyRB->getGlobalPose().p);
 	dir = dir.getNormalized();
-	//std::cout << dir.x << " " << dir.y << " " << dir.z << std::endl;
 	enemyRB->addForce(dir * 25000.0f);
 	if (enemyRB->getGlobalPose().p.y <= -50.0f) timeFalling += t;
 	if (timeFalling >= respawnTime) respawn();
